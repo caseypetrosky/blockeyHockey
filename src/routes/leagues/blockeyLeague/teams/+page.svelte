@@ -21,7 +21,7 @@
 		templatePlayer
 
 	]
-import TeamDisplayLG from '../../../../lib/TeamDisplayLG.svelte';
+import TeamDisplayLG from './../../../lib/TeamDisplayLG.svelte';
 	// @ts-ignore
 	function bhlTeam(logo, name, owner, wins, losses, points, twitter, players, teamColor){
 		this.logo = logo;
