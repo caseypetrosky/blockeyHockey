@@ -33,7 +33,7 @@
     export let players;
     export let teamColor;
     let teamURL = `/teams/${teamName}`;
-    import PlayerRosterDisplay from '../../../lib/playerRosterDisplay.svelte';
+    import PlayerRosterDisplay from './playerRosterDisplay.svelte';
 
 </script>
 <div class="lg:flex items-center rounded-lg  border-4 m-4  p-4" style="border-color: {teamColor}">
