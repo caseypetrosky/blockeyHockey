@@ -73,7 +73,7 @@
 				</details>
 			</li>
 			<li>
-				<a href="/stats"> Stats </a>
+				<a href="/stats"> Player Stats </a>
 			</li>
 			<li>
 				<a href="https://store.blockeyhockey.com"> Store </a>

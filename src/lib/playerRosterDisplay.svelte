@@ -9,7 +9,7 @@
   };
   let teamColor = player.teamColor;
 
-  let playerUrl = `/players/${player.name}`;
+  let playerUrl = `/players/${player.UUID}`;
   
 </script>
 

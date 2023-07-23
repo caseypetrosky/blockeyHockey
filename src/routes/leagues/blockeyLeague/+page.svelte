@@ -1,8 +1,9 @@
 
-<div class="container py-4 mx-auto text-white tabs ">
-  <a href="/leagues/blockeyLeague" class="tab tab-bordered tab-active text-2xl">BHL</a> 
-  <a href="/leagues/blockeyLeague/teams" class="tab tab-bordered text-2xl ">Teams</a> 
+<div class="container py-4 mx-auto pb-10 text-white tabs ">
+  <a href="/leagues/blockeyLeague" class="tab tab-bordered tab-active text-2xl">League Info</a> 
+  <a href="/leagues/blockeyLeague/rosters" class="tab tab-bordered text-2xl ">Team Rosters</a> 
   <a href="/leagues/blockeyLeague/standings" class="tab tab-bordered text-2xl">Standings</a>
+  <a href="/leagues/blockeyLeague/bhlstats" class="tab tab-bordered text-2xl">Stats Leaderboard</a>
 </div>
   <header class="text-white">
     <div class="container mx-auto px-4">
