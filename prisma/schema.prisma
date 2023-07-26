@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model game_goalie_stats {
+  goalie_stats_id BigInt @id @default(autoincrement())
+  game_id         BigInt
+  player_id       BigInt
+  shots           Int    @default(0)
+  saves           Int    @default(0)
+  goals_against   Int    @default(0)
+  games           games  @relation(fields: [game_id], references: [game_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model game_player_stats {
+  player_stats_id BigInt @id @unique @default(autoincrement())
+  game_id         BigInt
+  player_id       BigInt
+  goals           Int    @default(0) @db.SmallInt
+  assists         Int    @default(0) @db.SmallInt
+  touches         Int    @default(0) @db.SmallInt
+  time_on_ice     Int    @default(0)
+  blocks          Int    @default(0) @db.SmallInt
+  games           games  @relation(fields: [game_id], references: [game_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model game_team_stats {
+  team_stats_id  BigInt @id @unique @default(autoincrement())
+  team_id        String
+  game_id        BigInt
+  goals_scored   BigInt @default(0)
+  goals_conceded BigInt @default(0)
+  games          games  @relation(fields: [game_id], references: [game_id], onUpdate: NoAction)
+  teams          teams  @relation(fields: [team_id], references: [team_char], onUpdate: NoAction)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model games {
+  game_id                         BigInt              @id @unique @default(autoincrement())
+  season_id                       BigInt
+  game_date                       DateTime            @db.Date
+  is_post_season                  Boolean             @default(false)
+  is_overtime                     Boolean             @default(false)
+  home_team_sh                    String
+  away_team_sh                    String
+  game_goalie_stats               game_goalie_stats[]
+  game_player_stats               game_player_stats[]
+  game_team_stats                 game_team_stats[]
+  teams_games_away_team_shToteams teams               @relation("games_away_team_shToteams", fields: [away_team_sh], references: [team_char], onUpdate: NoAction)
+  teams_games_home_team_shToteams teams               @relation("games_home_team_shToteams", fields: [home_team_sh], references: [team_char], onUpdate: NoAction)
+  seasons                         seasons             @relation(fields: [season_id], references: [season_id], onUpdate: NoAction)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model league {
+  league_id BigInt    @id @default(autoincrement())
+  name      String
+  seasons   seasons[]
+  teams     teams[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model player_master {
+  UUID               String   @unique @db.Uuid
+  username           String?
+  goalie             Boolean  @default(false)
+  ingame_number      Int      @default(0)
+  managment_position String[]
+  awards             String[]
+  player_id          BigInt   @unique @default(autoincrement())
+  team_sh            String?
+  teams              teams?   @relation(fields: [team_sh], references: [team_char], onDelete: SetDefault, onUpdate: NoAction)
+
+  @@id([UUID, player_id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model seasons {
+  season_id  BigInt    @id @unique @default(autoincrement())
+  league_id  BigInt
+  start_date DateTime? @db.Date
+  end_date   DateTime? @db.Date
+  games      games[]
+  league     league    @relation(fields: [league_id], references: [league_id], onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model teams {
+  team_name                       String
+  league_id                       BigInt
+  team_owner                      String?
+  championships                   String[]
+  team_char                       String            @unique @default("")
+  game_team_stats                 game_team_stats[]
+  games_games_away_team_shToteams games[]           @relation("games_away_team_shToteams")
+  games_games_home_team_shToteams games[]           @relation("games_home_team_shToteams")
+  player_master                   player_master[]
+  league                          league            @relation(fields: [league_id], references: [league_id], onUpdate: NoAction)
+}
+
+enum continents {
+  Africa
+  Antarctica
+  Asia
+  Europe
+  Oceania
+  North_America @map("North America")
+  South_America @map("South America")
+}
