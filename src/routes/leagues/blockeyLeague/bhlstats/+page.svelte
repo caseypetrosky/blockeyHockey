@@ -19,3 +19,4 @@ export let data
 	 {team.id} {team.name} {team.team_owner}<br>
 	{/each}
   </main>
+  <h1>What the heckers</h1>
