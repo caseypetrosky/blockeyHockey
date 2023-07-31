@@ -1,7 +1,7 @@
 {
   "name": "blockeyhockey",
   "version": "0.0.1",
-  "private": false,
+  "private": true,
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
@@ -30,6 +30,7 @@
     "@prisma/client": "^5.0.0",
     "flowbite": "^1.6.6",
     "flowbite-svelte": "^0.39.1",
+    "prisma-client": "^0.0.0",
     "tailwind-merge": "^1.13.2"
   }
 }
