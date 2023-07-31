@@ -1,5 +1,6 @@
 <script>
-	import '../app.postcss';
+	import { Avatar } from 'flowbite-svelte';
+import '../app.postcss';
 
     let myImage = '/src/static/bhl.png';
 
@@ -87,6 +88,7 @@
 				<input type="text" placeholder="Player Search" class="input" />
 			</div>
 		</form>
+		
 	</div>
 </div>
 <div />
@@ -94,6 +96,7 @@
 <footer class="footer footer-center bg-base-100 text-base-content hidden p-4 lg:block">
 	<div>
 		<p>Copyright &#xa9; 2023 - All right reserved by Blockey Hockey LLC</p>
+		<a href="/admin" class="hover:text-accent-focus ">Admin Login</a>
 		<p>Coded by Caspet</p>
 	</div>
 </footer>

@@ -23,6 +23,7 @@ model Team {
   league League @relation(fields: [leagueId], references: [id])
   leagueId Int
   game_team_stats game_team_stats[]
+  color String @default("#FFFFFF")
 }
 
 model Player {

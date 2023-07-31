@@ -22,9 +22,9 @@
 
     <section class="mt-8">
       <h2 class="text-2xl font-bold mb-4">Teams</h2>
-      <p class="text-lg">The league consists of 9 teams competing for the championship title each season. Each team represents a different city or region and are owned by players.</p>
+      <p class="text-lg">The league consists of 10 teams divided into 2 Divisions competing for the championship title each season. Each team represents a different city or region and are owned by players.</p>
       <p class="text-lg mt-2">Check out our teams page to learn more about the exciting roster of teams in the and a little bit about them.</p>
-      <a href="/leagues/blockeyLeague/teams" class="btn bg-primary m-2">View Teams</a> 
+      <a href="/teams" class="btn bg-primary m-2">View Teams</a> 
     </section>
 
     <section class="mt-8">
