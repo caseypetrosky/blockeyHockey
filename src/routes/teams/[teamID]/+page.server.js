@@ -6,7 +6,19 @@ export const load = async ({ params }) => {
             id: params.teamID
         }
     });
+    const league = await prisma.league.findUnique({
+        where: {
+            id: team.leagueId
+        }
+    });
+    const players = await prisma.player.findMany({
+        where: {
+            teamId: params.teamID
+        }
+    });
+    
     return {
-        team
+        team,
+        league
     }
 }
