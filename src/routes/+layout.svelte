@@ -2,7 +2,7 @@
 	import '../app.postcss';
     let myImage = '/src/static/bhl.png';
 	import { goto } from '$app/navigation';
-
+	
     let search = '';
 
     const handleSubmit = async (e) => {
@@ -68,6 +68,9 @@
 			<h1 class="hidden text-xl normal-case lg:flex">Blockey Hockey League</h1></a
 		>
 	</div>
+
+	<!--Desktop Navbar-->
+
 	<div class="navbar-center hidden lg:flex">
 		<ul class="menu menu-horizontal tabs tabs-boxed px-1">
 			

@@ -1,35 +1,5 @@
 <script>
-   /**
-	 * @type {any}
-	 */
-    export let imgSource;
-  /**
-	 * @type {any}
-	 */
-   export let teamName;
-    /**
-	 * @type {any}
-	 */
-   export let teamOwner;
-    /**
-     * @type {any}
-     */
-    export let teamWins;
-    /**
-     * @type {any}
-     */
-    export let teamLosses;
-    /**
-     * @type {any}
-     */
-    export let teamPoints;
-    /**
-     * @type {any}
-     */
-    export let teamTwitter;
-        /**
-     * @type list
-     */
+
     export let players;
     export let teamColor;
     let teamURL = `/teams/${teamName}`;

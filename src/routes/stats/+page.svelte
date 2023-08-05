@@ -14,6 +14,7 @@ const handleSubmit = async (e) => {
         const playerId = data.data.player.raw_id;
         
         goto(`/stats/${playerId}`);
+        
     } catch (error) {
         console.error("An error occurred:", error);
     }
