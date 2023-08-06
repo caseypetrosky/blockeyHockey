@@ -6,6 +6,23 @@
     let rinkImg = `/src/static/logos/${data.team.id}rink.png`
     let teamPlayers = data.players;
     let teamColor = data.team.color;
+    let gamesPlayed = 0;
+    let wins = 0;
+    let losses = 0;
+    let otLosses = 0;
+    
+    for(let i = 0; i < data.team.game_team_stats.length; i++){
+        gamesPlayed++;
+        if(data.team.game_team_stats[i].goals_scored > data.team.game_team_stats[i].goals_allowed){
+            wins++;
+        }
+        else if(data.team.game_team_stats[i].goals_scored < data.team.game_team_stats[i].goals_allowed && !data.team.game_team_stats[i].is_overtime){
+            losses++;
+        }
+        else{
+            otLosses++;
+        }
+    }
 </script>
 
 
@@ -20,7 +37,8 @@
             {#if data.team.championships   != null  }
                 <h3>Championships: {data.team.championships}</h3>
             {/if}
-
+            <h2 class="text-xl">Record</h2>
+            <p>{wins}-{losses}-{otLosses}</p>
         </div>
     </div>  
     <h2 class="text-2xl mt-4">Description</h2>
@@ -32,12 +50,6 @@
     {#if teamPlayers.length > 0}
         {#each teamPlayers as player}
               <CutePlayerDisp player = {player}/>
-              <CutePlayerDisp player = {player}/>
-              <CutePlayerDisp player = {player}/>
-              <CutePlayerDisp player = {player}/>
-              <CutePlayerDisp player = {player}/>
-
-
         {/each}
     {:else}
               <h1>This team has no players</h1>

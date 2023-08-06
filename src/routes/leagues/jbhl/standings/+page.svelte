@@ -62,17 +62,17 @@
 </script>
 
 <div class="container py-4 mx-auto text-white tabs">
-  <a href="/leagues/blockeyLeague" class="tab tab-bordered text-2xl"
+  <a href="/leagues/jbhl" class="tab tab-bordered text-2xl"
     >League Info</a
   >
-  <a href="/leagues/blockeyLeague/rosters" class="tab tab-bordered text-2xl"
+  <a href="/leagues/jbhl/rosters" class="tab tab-bordered text-2xl"
     >Team Rosters</a
   >
   <a
-    href="/leagues/blockeyLeague/standings"
+    href="/leagues/jbhl/standings"
     class="tab tab-bordered tab-active text-2xl">Standings</a
   >
-  <a href="/leagues/blockeyLeague/bhlstats" class="tab tab-bordered text-2xl"
+  <a href="/leagues/jbhl/jbhlstats" class="tab tab-bordered text-2xl"
     >Stats Leaderboard</a
   >
 </div>
@@ -118,8 +118,4 @@
   </table>
 </div>
 
-
-<pre>
-  {JSON.stringify($page,null,2)}
-</pre>
 

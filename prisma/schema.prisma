@@ -68,6 +68,8 @@ model game_team_stats {
   goals_scored  Int    @default(0)
   goals_allowed Int    @default(0)
   gameId        Int
+  playoff       Boolean @default(false)
+  overtime    Boolean @default(false)
   game          games  @relation(fields: [gameId], references: [id])
   team          Team   @relation(fields: [teamId], references: [id])
 }
