@@ -26,7 +26,7 @@
   <link rel="icon" type="image/svg" href={myImage} />
 </svelte:head>
 
-<div class="navbar bg-primary">
+<div class="navbar bg-primary-500">
 	<div class="navbar-start">
 		<div class="dropdown">
 			
