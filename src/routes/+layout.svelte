@@ -126,7 +126,7 @@
 </div>
 <div />
 <slot />
-<footer class="footer footer-center bg-base-100 text-base-content hidden p-4 lg:block">
+<footer class="footer fixed b-0 footer-center bg-base-100 text-base-content hidden p-4 lg:block">
 	<div>
 		<p>Copyright &#xa9; 2023 - All right reserved by Blockey Hockey LLC</p>
 		<a href="/admin" class="hover:text-accent-focus ">Admin Login</a>

@@ -55,8 +55,8 @@ model season {
 
 model games {
   id                Int                 @id @default(autoincrement())
-  home_teamId String  
-  away_teamId String 
+  home_teamId String  @default("FA")
+  away_teamId String @default("FA")
   date              DateTime
   is_playoff        Boolean             @default(false)
   is_overtime       Boolean             @default(false)
@@ -107,7 +107,7 @@ model game_goalie_stats {
 
 model allTimeSkaterStats {
   id            Int    @id @default(autoincrement())
-  playerId      Int
+  playerId      Int @unique
   seasons_played  Int    @default(0)
   games_played Int   @default(0)
   goals  Int    @default(0)
@@ -118,7 +118,7 @@ model allTimeSkaterStats {
 
 model allTimeGoalieStats{
   id           Int    @id @default(autoincrement())
-  playerId     Int
+  playerId     Int @unique
   seasons_played  Int    @default(0)
   games_played Int    @default(0)
   wins         Int    @default(0)
