@@ -2,43 +2,17 @@
     import {page} from '$app/stores';
     import {Tabs, TabItem} from 'flowbite-svelte';
     export let data;
-    let goals = 0;
-    let assists = 0;
-     let gamesPlayed = 0;
-     let shots = 0;
-     let saves = 0;
+     console.log(data);
      let savepercentage = 0;
      let gaa = 0;
-     let last5 = [];
-     console.log(data);
-    if(!data.player.goalie){
-        for(let i = 0; i < data.player.game_player_stats.length; i++){
-            goals += data.player.game_player_stats[i].goals_scored;
-            assists += data.player.game_player_stats[i].assists;
-            gamesPlayed++;
-            if(i<5){
-                last5.push(data.player.game_player_stats[i],);
-            }
-        }
+    if(data.player.goalie){
+        savepercentage = parseFloat((data.player.seasonalgoaliestats.saves / data.player.seasonalgoaliestats.shots)*100).toFixed(2);
+        gaa = parseFloat(data.player.seasonalgoaliestats.goals_allowed / data.player.seasonalgoaliestats.gamesPlayed).toFixed(2);
     }
-    else{
-        for(let i = 0; i < data.player.game_goalie_stats.length; i++){
-            shots += data.player.game_goalie_stats[i].shots;
-            saves += data.player.game_goalie_stats[i].saves;
-            gamesPlayed++;
-            if(i<5){
-                last5.push(data.player.game_goalie_stats[i]);
-            }
-        }
-        savepercentage = saves / shots;
-        gaa = goals / gamesPlayed;
-    }
-    //take the last 5 games from the array and add them to an array
-    //then display the array
-    
-let points = goals + assists;
-let ppg = points / gamesPlayed;
-
+let ppg = 0
+if( data.player.seasonalgoaliestats.gamesPlayed> 0){
+        ppg = parseFloat(data.player.seasonalstats.points / data.player.seasonalstats.gp).toFixed(2);
+   };
 let ggp = 0
 let agp = 0
 let psp = 0
@@ -78,7 +52,7 @@ allTimePPG = parseFloat(alltimeSkater.points / alltimeSkater.games_played).toFix
 if(data.player.goalie){
 alltimeGoalie = data.player.allTimeGoalieStats[0];
 winpercentage = parseFloat((alltimeGoalie.wins / alltimeGoalie.games_played)*100).toFixed(2);
-allTimesavepercentage = parseFloat(alltimeGoalie.saves / alltimeGoalie.shots).toFixed(2);
+allTimesavepercentage = parseFloat((alltimeGoalie.saves / alltimeGoalie.shots*100)).toFixed(2);
 spg = parseFloat(alltimeGoalie.shots / alltimeGoalie.games_played).toFixed(2);
 allTimegaa = parseFloat(alltimeGoalie.goals_allowed / alltimeGoalie.games_played).toFixed(2);
 }
@@ -109,24 +83,33 @@ allTimegaa = parseFloat(alltimeGoalie.goals_allowed / alltimeGoalie.games_played
                 <hr class="border-2 w-1/4" style="border-color: {data.player.team.color}">
                 <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mt-4">
                     <div class="p-2">
+                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Games Played</h2>
+                        <p>{data.player.seasonalstats.gp}</p>
+                    </div>
+                    <div class="p-2">
                         <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals</h2>
-                        <p>{goals}</p>
+                        <p>{data.player.seasonalstats.goals}</p>
                     </div>
                     <div class="p-2">
                         <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Assists</h2>
-                        <p>{assists}</p>
+                        <p>{data.player.seasonalstats.assists}</p>
                     </div>
                     <div class="p-2">
                         <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Points</h2>
-                        <p>{points}</p>
+                        <p>{data.player.seasonalstats.points}</p>
                     </div>
                     <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals Against Average</h2>
+                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Touches</h2>
+                        <p>{data.player.seasonalstats.touches}</p>
+                    </div>
+                    <div class="p-2">
+                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Time On Ice</h2>
+                        <p>{data.player.seasonalstats.toi}</p>
+                    </div>
+                    
+                    <div class="p-2">
+                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Points Per Game</h2>
                         <p>{ppg}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Games Played</h2>
-                        <p>{gamesPlayed}</p>
                     </div>
                 </div>
             </div>
@@ -138,25 +121,34 @@ allTimegaa = parseFloat(alltimeGoalie.goals_allowed / alltimeGoalie.games_played
                 <hr class="border-2 w-1/4" style="border-color: {data.player.team.color}">
                 <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mt-4">
                     <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Shots Faced</h2>
-                        <p>{shots}</p>
+                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Games Played</h2>
+                        <p>{data.player.seasonalgoaliestats.gp}</p>
                     </div>
                     <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Saves</h2>
-                        <p>{saves}</p>
+                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Shots</h2>
+                        <p>{data.player.seasonalgoaliestats.shots}</p>
                     </div>
                     <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Save %</h2>
-                        <p>{savepercentage}</p>
+                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Saves</h2>
+                        <p>{data.player.seasonalgoaliestats.saves}</p>
                     </div>
                     <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals Against Average</h2>
+                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Save %</h2>
+                        <p>{savepercentage}%</p>
+                        </div>
+                    <div class="p-2">
+                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals Allowed</h2>
+                        <p>{data.player.seasonalgoaliestats.goals_allowed}</p>
+                        </div>
+                    <div class="p-2">
+                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Shutouts</h2>
+                        <p>{data.player.seasonalgoaliestats.shutouts}</p>
+                        </div>
+                    <div class="p-2">
+                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals Against Average</h2>
                         <p>{gaa}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Games Played</h2>
-                        <p>{gamesPlayed}</p>
-                    </div>
+                        </div>
+                     
                 </div>
             </div>
            
@@ -261,7 +253,7 @@ allTimegaa = parseFloat(alltimeGoalie.goals_allowed / alltimeGoalie.games_played
                     </div>
                     <div class="p-2">
                         <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">SV%</h2>
-                        <p>{allTimesavepercentage}</p>
+                        <p>{allTimesavepercentage}%</p>
                     </div>
                     <div class="p-2">
                         <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Shots per Game</h2>
@@ -282,6 +274,9 @@ allTimegaa = parseFloat(alltimeGoalie.goals_allowed / alltimeGoalie.games_played
     
     <h2 class="text-2xl mt-4">Awards</h2>
     <hr class=" border-2 w-1/4" style="border-color: {data.player.team.color}">
+    {#if data.player.awards != null}           
+    <h2>{data.player.awards}</h2>
+    {/if}
 
 
 
