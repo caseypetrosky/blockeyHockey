@@ -22,8 +22,11 @@ search = '';
 };
 
 </script>
-<div class="container py-4 mx-auto">
-  <h1 class="text-4xl py-4">Player Stats Search</h1>
+<div class="container mx-auto">
+  <div class="container py-4 mx-auto text-white tabs ">
+    <a href="/stats" class="tab tab-bordered tab-active text-2xl">Player Page Search</a> 
+    <a href="/stats/leaderboard" class="tab tab-bordered text-2xl ">All time leaderboards</a> 
+  </div>
 <form class="flex gap-2 " on:submit={handleSubmit}>
   <Search bind:value={search} size='lg' class="flex gap-2 items-center" placeholder="Search for player by username or uuid">
   </Search>

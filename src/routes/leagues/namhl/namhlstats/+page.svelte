@@ -49,32 +49,42 @@ $: sort = (column) => {
 					<thead>
 						<tr>
 							<th>Rank</th>
-							<th class="hover:cursor-pointer" on:click={() => { console.log('Clicked on Username header.'); sort("username"); }}>Username</th>
-							<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.gp")}>Games Played</th>
-							<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.goals")}>Goals</th>
-							<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.assists")}>Assists</th>
-							<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.points")}>Points</th>
-							<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.ppg")}>Points per Game</th>
-							<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.touches")}>Touches</th>
-							<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.toi")}>Time On Ice</th>
-	
-	
-							
-						</tr>
-					</thead>
-					<tbody>
-						{#each array as row,i}
-							<tr>	
-								<td>{i +1}</td>
-								<td><a href="/stats/{row.uuid}" class="text-lg"><img src="https://minotar.net/armor/bust/{row.uuid}/300.png" alt="player avatar" class="rounded-sm w-8 h-8">{row.username}</a></td>
-								<td>{row.skaterStats.gp}</td>
-								<td>{row.skaterStats.goals}</td>
-								<td>{row.skaterStats.assists}</td>
-								<td>{row.skaterStats.points}</td>
-								<td>{row.skaterStats.ppg}</td>
-								<td>{row.skaterStats.touches}</td>
-								<td>{row.skaterStats.toi}</td>
-	
+						<th class="hover:cursor-pointer" on:click={() => { console.log('Clicked on Username header.'); sort("username"); }}>Username</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.gp")}>Games Played</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.goals")}>Goals</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.assists")}>Assists</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.points")}>Points</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.touches")}>Touches</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.toi")}>Time On Ice</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.ppg")}>Points per Game</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.gpg")}>Goals per Game</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.pp15")}>Points per 15mins</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.gp15")}>Goals per 15mins</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.toup15")}>Touches per 15mins</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.toupg")}>Touches per Goal</th>
+
+						
+					</tr>
+				</thead>
+				<tbody>
+					{#each array as row,i}
+						<tr>	
+							<td>{i +1}</td>
+							<td><a href="/stats/{row.uuid}" class="text-lg"><img src="https://minotar.net/armor/bust/{row.uuid}/300.png" alt="player avatar" class="rounded-sm w-8 h-8">{row.username}</a></td>
+							<td>{row.skaterStats.gp}</td>
+							<td>{row.skaterStats.goals}</td>
+							<td>{row.skaterStats.assists}</td>
+							<td>{row.skaterStats.points}</td>
+							<td>{row.skaterStats.touches}</td>
+							<td>{row.skaterStats.toi}</td>
+							<td>{row.skaterStats.ppg}</td>
+							<td>{row.skaterStats.gpg}</td>
+							<td>{row.skaterStats.pp15}</td>
+							<td>{row.skaterStats.gp15}</td>
+							<td>{row.skaterStats.toup15}</td>
+							<td>{row.skaterStats.toupg}</td>
+
+
 	
 							</tr>
 						{/each}

@@ -45,7 +45,7 @@ $: sort = (column) => {
 	<TabItem open  title="Skater Stats Leaderboard">
 		<div class="overflow-x-auto  text-white">
 			<h1 class="text-3xl font-bold text-center">S19 Skater Stats Leaderboard</h1>
-			<table class="table">
+			<table class="table table-">
 				<thead>
 					<tr>
 						<th>Rank</th>
@@ -54,10 +54,14 @@ $: sort = (column) => {
 						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.goals")}>Goals</th>
 						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.assists")}>Assists</th>
 						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.points")}>Points</th>
-						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.ppg")}>Points per Game</th>
 						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.touches")}>Touches</th>
 						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.toi")}>Time On Ice</th>
-
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.ppg")}>Points per Game</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.gpg")}>Goals per Game</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.pp15")}>Points per 15mins</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.gp15")}>Goals per 15mins</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.toup15")}>Touches per 15mins</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("skaterStats.toupg")}>Touches per Goal</th>
 
 						
 					</tr>
@@ -71,9 +75,14 @@ $: sort = (column) => {
 							<td>{row.skaterStats.goals}</td>
 							<td>{row.skaterStats.assists}</td>
 							<td>{row.skaterStats.points}</td>
-							<td>{row.skaterStats.ppg}</td>
 							<td>{row.skaterStats.touches}</td>
 							<td>{row.skaterStats.toi}</td>
+							<td>{row.skaterStats.ppg}</td>
+							<td>{row.skaterStats.gpg}</td>
+							<td>{row.skaterStats.pp15}</td>
+							<td>{row.skaterStats.gp15}</td>
+							<td>{row.skaterStats.toup15}</td>
+							<td>{row.skaterStats.toupg}</td>
 
 
 						</tr>

@@ -2,7 +2,6 @@
     import {page} from '$app/stores';
     import {Tabs, TabItem} from 'flowbite-svelte';
     export let data;
-     console.log(data);
      let savepercentage = 0;
      let gaa = 0;
     if(data.player.goalie){
@@ -43,12 +42,14 @@ alltimeGoalie.saves= 0;
 
 if(!data.player.goalie && data.player.allTimeSkaterStats[0]!=null) {
 alltimeSkater = data.player.allTimeSkaterStats[0];
+alltimeSkater.points = alltimeSkater.goals + alltimeSkater.assists;
 ggp = parseFloat(alltimeSkater.goals / alltimeSkater.games_played).toFixed(2);
 agp = parseFloat(alltimeSkater.assists / alltimeSkater.games_played).toFixed(2);
 psp = parseFloat(alltimeSkater.points / alltimeSkater.seasons_played).toFixed(2);
 gsp = parseFloat(alltimeSkater.goals / alltimeSkater.seasons_played).toFixed(2);
 asp = parseFloat(alltimeSkater.assists / alltimeSkater.seasons_played).toFixed(2);
 allTimePPG = parseFloat(alltimeSkater.points / alltimeSkater.games_played).toFixed(2);}
+
 if(data.player.goalie){
 alltimeGoalie = data.player.allTimeGoalieStats[0];
 winpercentage = parseFloat((alltimeGoalie.wins / alltimeGoalie.games_played)*100).toFixed(2);

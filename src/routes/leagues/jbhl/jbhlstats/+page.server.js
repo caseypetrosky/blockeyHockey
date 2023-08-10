@@ -35,8 +35,19 @@ let flattenStats = (player) => {
         }
     });
     let ppg = 0;
+    let gpg = 0;
+    let pp15 = 0;
+    let gp15 = 0;
+    let toup15 = 0;
+    let toupg = 0;
     if(gp > 0){
         ppg = parseFloat(points / gp).toFixed(2);
+        gpg = parseFloat(goals / gp).toFixed(2);
+        pp15 = parseFloat(points / toi * 900).toFixed(2);
+        gp15 = parseFloat(goals / toi * 900).toFixed(2);
+        toup15 = parseFloat(toi / gp * 900).toFixed(2);
+        toupg = parseFloat(touches / goals * 900).toFixed(2);
+
    };
     const consolidatedPlayerObject = {
         ...player,
@@ -48,6 +59,11 @@ let flattenStats = (player) => {
             toi: toi,
             gp: gp,
             ppg: ppg,
+            gpg: gpg,
+            pp15: pp15,
+            gp15: gp15,
+            toup15: toup15,
+            toupg: toupg,
         },
        
     };
