@@ -337,8 +337,3 @@ allTimegaa = parseFloat(alltimeGoalie.goals_allowed / alltimeGoalie.games_played
 </div>
 
 
-
-
-<pre>
-    {JSON.stringify($page,null,2)}
-</pre>
