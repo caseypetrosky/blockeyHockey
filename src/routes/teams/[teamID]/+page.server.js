@@ -24,6 +24,18 @@ export const load = async ({ params }) => {
         }
     });
 
+    if(team.leagueId == 1){
+    let capHit = team.capSpace;
+    let totalSalary = 0;
+
+    players.forEach(player => {
+        capHit -= player.contractPrice;
+        totalSalary += player.contractPrice;
+    });
+    team.capHit = capHit;
+    team.totalSalary = totalSalary;
+}
+    
     
     return {
         team,

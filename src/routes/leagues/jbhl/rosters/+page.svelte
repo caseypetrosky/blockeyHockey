@@ -20,7 +20,7 @@
   <div class="container mx-auto px-4">
     {#each data.team as t}
       <div class="flex gap-2">
-        <h1 class="text-4xl font-bold" >{t.name}</h1>
+        <a href="/teams/{t.id}" class="text-4xl font-bold" >{t.name}</a>
         <img src="/src/static/logos/{t.id}.png" class="h-12 w-12 object-contain" alt="Team Logo" />
       </div>
       <hr class="border-2 w-full" style="border-color: {t.color}">

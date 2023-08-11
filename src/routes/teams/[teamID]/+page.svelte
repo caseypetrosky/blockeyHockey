@@ -1,5 +1,7 @@
 <script>
 	import CutePlayerDisp from '$lib/cutePlayerDisp.svelte';
+	import BHLCutePlayerDisp from '$lib/bhlcutePlayerDisp.svelte';
+
     import {page} from '$app/stores';
     export let data;
     let teamImg = `/src/static/logos/${data.team.id}.png`;
@@ -37,6 +39,12 @@
             {#if data.team.championships   != null  }
                 <h3>Championships: {data.team.championships}</h3>
             {/if}
+            {#if data.team.leagueId == 1}
+                <h2>Cap Space: ${data.team.capSpace}</h2>
+                <h2>Cap Hit: ${data.team.totalSalary}</h2>
+                <h2>Remaining Cap: ${data.team.capHit}</h2>
+            {/if}
+            
             <h2 class="text-xl">Record</h2>
             <p>{wins}-{losses}-{otLosses}</p>
         </div>
@@ -48,9 +56,15 @@
     <hr class=" border-2 w-1/4" style="border-color: {teamColor}">
     <div class="grid lg:grid-cols-10 md:grid-cols-5 sm:grid-cols-5 grid-cols-3">
     {#if teamPlayers.length > 0}
-        {#each teamPlayers as player}
-              <CutePlayerDisp player = {player}/>
-        {/each}
+        {#if data.team.leagueId == 1}
+            {#each teamPlayers as player}
+                <BHLCutePlayerDisp player = {player}/>
+            {/each}
+        {:else}
+            {#each teamPlayers as player}
+                <CutePlayerDisp player = {player}/>
+            {/each}
+        {/if}
     {:else}
               <h1>This team has no players</h1>
     {/if}

@@ -1,5 +1,5 @@
 <script>
-	import CutePlayerDisp from '$lib/cutePlayerDisp.svelte';
+	import BHLCutePlayerDisp from '$lib/bhlcutePlayerDisp.svelte';
 	export let data;
 </script>
 
@@ -20,13 +20,13 @@
   <div class="container mx-auto px-4">
     {#each data.team as t}
       <div class="flex gap-2">
-        <h1 class="text-4xl font-bold" >{t.name}</h1>
+        <a href="/teams/{t.id}" class="text-4xl font-bold" >{t.name}</a>
         <img src="/src/static/logos/{t.id}.png" class="h-12 w-12 object-contain" alt="Team Logo" />
       </div>
       <hr class="border-2 w-full" style="border-color: {t.color}">
       <div class="grid lg:grid-cols-10 md:grid-cols-5 sm:grid-cols-5 grid-cols-3">
        {#each t.players as player}
-        <CutePlayerDisp player={player}/>
+        <BHLCutePlayerDisp player={player}/>
        {:else}
        <h2>No players</h2>
        {/each}
