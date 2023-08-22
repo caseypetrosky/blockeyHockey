@@ -29,7 +29,7 @@
 
     <section class="mt-8">
       <h2 class="text-2xl font-bold mb-4">Schedule</h2>
-      <p class="text-lg">Stay up to date with the latest matches and game schedules in the Blockey Hockey League. All standings in the discord servers.</p>
+      <p class="text-lg">Stay up to date with the latest matches and game schedules in the Blockey Hockey League. All scheduled games and reschedules can be found in the discord servers.</p>
     </section>
   </div>
 
