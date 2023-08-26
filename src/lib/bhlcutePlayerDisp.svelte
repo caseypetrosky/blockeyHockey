@@ -75,4 +75,5 @@ let ppg = points / gamesPlayed;
         <h2 class="text-xs">{player.contractTier}</h2>
         <h2 class="text-xs">${player.contractPrice}</h2>
         <h2 class="text-xs" >{player.contractLength} Season(s)</h2>
+        
 </div>

@@ -39,12 +39,13 @@
             {#if data.team.championships   != null  }
                 <h3>Championships: {data.team.championships}</h3>
             {/if}
+            <div class="text-xs">
             {#if data.team.leagueId == 1}
-                <h2>Cap Space: ${data.team.capSpace}</h2>
-                <h2>Cap Hit: ${data.team.totalSalary}</h2>
-                <h2>Remaining Cap: ${data.team.capHit}</h2>
+                <h3>Cap Space: ${data.team.capSpace}</h3>
+                <h3>Cap Hit: ${data.team.totalSalary}</h3>
+                <h3>Remaining Cap: ${data.team.capHit}</h3>
             {/if}
-            
+        </div>
             <h2 class="text-xl">Record</h2>
             <p>{wins}-{losses}-{otLosses}</p>
         </div>

@@ -70,7 +70,7 @@ allTimegaa = parseFloat(alltimeGoalie.goals_allowed / alltimeGoalie.games_played
              <h2>Roles: {data.player.league_roles}</h2>
             {/if}
             <h2>Number: {data.player.number}</h2>
-            <h2>Contract Info</h2>
+            <h2>Current Contract Info</h2>
             <hr class="border-2 " style="border-color: {data.player.team.color}">
             <p class="text-xs">Contract Type: {data.player.contractTier}</p>
             <p class="text-xs">Contract Price: ${data.player.contractPrice}</p>

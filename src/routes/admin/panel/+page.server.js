@@ -12,9 +12,19 @@ const newPlayerSchema = z.object({
     contractLength: z.number().min(1).max(3),
     contractPrice: z.number().min(1500).max(15000),
 });
+const newTeamSchema = z.object({
+    name: z.string().min(3),
+    leagueId: z.number(),
+    team_owner: z.string().min(3),
+    color: z.string().min(3),
+    id: z.string().min(1).max(4),
+    description: z.string()});
+
+
 
 export const load = async (event) => {
-        const form = await superValidate(event, newPlayerSchema);
+        const newPlayerForm = await superValidate(event, newPlayerSchema);
+        const newTeamForm = await superValidate(event, newTeamSchema);
         const team = await prisma.team.findMany({
             select: {
                 name: true,
@@ -44,7 +54,8 @@ export const load = async (event) => {
             players,
             goalies,
             team,
-            form
+            newPlayerForm,
+            newTeamForm,
         }
 }
 const getUUID = async (username) => {
@@ -61,7 +72,7 @@ const getUUID = async (username) => {
 };
 
 export const actions = {
-    default: async (event) => {
+    newPlayerForm: async (event) => {
         const form = await superValidate(event, newPlayerSchema);
         console.log(form);
 
@@ -79,7 +90,21 @@ export const actions = {
             form
         }
 
-    }
+    },
+    newTeamForm: async (event) => {
+        const form = await superValidate(event, newTeamSchema);
+        console.log(form);
+        if(!form.valid){
+            return fail(400,{
+                form
+            })
+        }
+        return {
+            form
+        }
+
+
+    },
 };
 
 

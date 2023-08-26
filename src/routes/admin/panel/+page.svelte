@@ -25,9 +25,21 @@
     contractLength: z.number().min(1).max(3),
     contractPrice: z.number().min(1500).max(15000),
 });
-  const {form, errors, enhance} = superForm(data.form, {
+const newTeamSchema = z.object({
+    name: z.string().min(3),
+    leagueId: z.number(),
+    team_owner: z.string().min(3),
+    color: z.string().min(3),
+    id: z.string().min(1).max(4),
+    description: z.string()});
+
+  const {form, errors, enhance} = superForm(data.newPlayerForm, {
     taintedMessage: "This field has been changed",
     validators: newPlayerSchema,
+  });
+  const {newTeamForm, newTeamErrors, newTeamEnhance} = superForm(data.newTeamForm, {
+    taintedMessage: "This field has been changed",
+    validators: newTeamSchema,
   });
 
 
@@ -115,81 +127,89 @@
     Admin Panel
   </h1>
 
+   <div class="grid grid-cols-2">
 
-      <h3 class="my-4 text-xl font-medium text-gray-900 dark:text-white">
-        Create A New Player
-      </h3>
-      <form class="flex flex-col" method="POST" use:enhance>
-        <div class="form-control w-full max-w-xs">
-          <label class="label text-white" for="username">Username</label>
-          <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="username" placeholder="Username" required bind:value={$form.username}/>
-          {#if $errors.username}
-            <small class="text-red-500">{$errors.username}</small>
-          {/if}
+      
+      <form method="POST" action="?/newP" use:enhance>
+        <h3 class="my-4 text-xl font-medium text-gray-900 dark:text-white">
+          Create A New Player
+        </h3>
+          <div class="form-control w-full max-w-xs">
+            <label class="label text-white" for="username">Username</label>
+            <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="username" placeholder="Username" required bind:value={$form.username}/>
+            {#if $errors.username}
+              <small class="text-red-500">{$errors.username}</small>
+            {/if}
+          </div>
+          
+          <div class="form-control w-full max-w-xs">
+            <label class="label text-white" for="number">Number</label>
+            <input class="input input-bordered input-accent w-full max-w-xs" type="number" name="number" placeholder="Number" required bind:value={$form.number}/>
+            {#if $errors.number}
+              <small class="text-red-500">{$errors.number}</small>
+            {/if}
+          </div>
+          <div class="w-full max-w-xs">
+          <label for="teamId">Team ID</label>
+            <select class="select select-accent w-full max-w-xs" name="teamId" bind:value={$form.teamId}>
+              {#each teams as team}
+                <option value={team.value}>{team.name}</option>
+              {/each}
+            </select>
+            {#if $errors.teamId}
+                  <small class="text-red-500">{$errors.teamId}</small>
+            {/if}
+              
         </div>
-        
-        <div class="form-control w-full max-w-xs">
-          <label class="label text-white" for="number">Number</label>
-          <input class="input input-bordered input-accent w-full max-w-xs" type="number" name="number" placeholder="Number" required bind:value={$form.number}/>
-          {#if $errors.number}
-            <small class="text-red-500">{$errors.number}</small>
+        <div class="w-full max-w-xs">
+          <label for="goalie">Goalie?</label>
+          <select class="select select-accent w-full max-w-xs" name="goalie" bind:value={$form.goalie}>
+            <option value=True>Yes</option>
+            <option selected value=False>No</option>
+          </select>
+          {#if $errors.goalie}
+                  <small class="text-red-500">{$errors.goalie}</small>
+            {/if}
+        </div>
+
+        <div class="w-full max-w-xs">
+          <label for="contractPrice">Contract Price</label>
+          <input class="input input-bordered input-accent w-full max-w-xs" type="number" name="contractPrice" placeholder="Contract Price" required bind:value={$form.contractPrice}/>
+          {#if $errors.contractPrice}
+            <small class="text-red-500">{$errors.contractPrice}</small>
           {/if}
         </div>
         <div class="w-full max-w-xs">
-        <label for="teamId">Team ID</label>
-          <select class="select select-accent w-full max-w-xs" name="teamId" bind:value={$form.teamId}>
-            {#each teams as team}
-              <option value={team.value}>{team.name}</option>
+          <label for="contractType">Contract Type</label>
+          <select class="select select-accent w-full max-w-xs" name="contractType" bind:value={$form.contractType}>
+            {#each contractTypes as contractType}
+              <option value={contractType.value}>{contractType.name}</option>
             {/each}
           </select>
-          {#if $errors.teamId}
-                <small class="text-red-500">{$errors.teamId}</small>
-          {/if}
-            
-       </div>
-       <div class="w-full max-w-xs">
-        <label for="goalie">Goalie?</label>
-        <select class="select select-accent w-full max-w-xs" name="goalie" bind:value={$form.goalie}>
-          <option value=True>Yes</option>
-          <option selected value=False>No</option>
-        </select>
-        {#if $errors.goalie}
-                <small class="text-red-500">{$errors.goalie}</small>
-          {/if}
-      </div>
-
-      <div class="w-full max-w-xs">
-        <label for="contractPrice">Contract Price</label>
-        <input class="input input-bordered input-accent w-full max-w-xs" type="number" name="contractPrice" placeholder="Contract Price" required bind:value={$form.contractPrice}/>
-        {#if $errors.contractPrice}
-          <small class="text-red-500">{$errors.contractPrice}</small>
-        {/if}
-      </div>
-      <div class="w-full max-w-xs">
-        <label for="contractType">Contract Type</label>
-        <select class="select select-accent w-full max-w-xs" name="contractType" bind:value={$form.contractType}>
-          {#each contractTypes as contractType}
-            <option value={contractType.value}>{contractType.name}</option>
-          {/each}
-        </select>
-        {#if $errors.contractType}
-                <small class="text-red-500">{$errors.contractType}</small>
-          {/if}
-      </div>
-      <div class="w-full max-w-xs">
-        <label for="contractLength">Contract Length</label>
-        <select class="select select-accent w-full max-w-xs" name="contractLength" bind:value={$form.contractLength}>
-          {#each lengths as length}
-            <option value={length.value}>{length.name}</option>
-          {/each}
-        </select>
-        {#if $errors.contractLength}
-                <small class="text-red-500">{$errors.contractLength}</small>
-          {/if}
-      </div>
-      <button type="submit"  class="btn btn-primary my-4 w-full max-w-xs">Submit New Player</button>
+          {#if $errors.contractType}
+                  <small class="text-red-500">{$errors.contractType}</small>
+            {/if}
+        </div>
+        <div class="w-full max-w-xs">
+          <label for="contractLength">Contract Length</label>
+          <select class="select select-accent w-full max-w-xs" name="contractLength" bind:value={$form.contractLength}>
+            {#each lengths as length}
+              <option value={length.value}>{length.name}</option>
+            {/each}
+          </select>
+          {#if $errors.contractLength}
+                  <small class="text-red-500">{$errors.contractLength}</small>
+            {/if}
+        </div>
+        <button type="submit"  class="btn btn-primary my-4 w-full max-w-xs">Submit New Player</button>
+    </form>
+    <form method="POST" use:enhance>
+      <h3 class="my-4 text-xl font-medium text-gray-900 dark:text-white">
+        Create A New Team
+      </h3>
     </form>
 
+   </div>
   <Button on:click={() => (teamCreate = true)}>New Team Creation</Button>
 
   <Modal bind:open={teamCreate} size="lg" autoclose={false} class="w-full">
