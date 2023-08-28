@@ -62,7 +62,7 @@ const getUUID = async (username) => {
     try {
         const response = await fetch(`https://playerdb.co/api/player/minecraft/${username}`);
         const data = await response.json();
-        console.log("UUID Data:", data);
+
         const playerId = data.data.player.raw_id;
         return playerId;
     } catch (error) {
@@ -74,7 +74,7 @@ const getUUID = async (username) => {
 export const actions = {
     newPlayerForm: async (event) => {
         const form = await superValidate(event, newPlayerSchema);
-        console.log(form);
+        
 
         if(!form.valid){
             return fail(400,{
@@ -82,25 +82,59 @@ export const actions = {
             })
         }
         
-        const uuid = await getUUID(form.username);
-        console.log(uuid);
+        const uuid = await getUUID(form.data.username);
+        
+        
+
+        if(!uuid){
+            return fail(400,{
+                form
+            })
+        }
+        const player = await prisma.player.create({
+            data: {
+                username: form.data.username,
+                uuid: uuid,
+                number: form.data.number,
+                teamId: form.data.teamId,
+                goalie: form.data.goalie,
+                contractTier: form.data.contractType,
+                contractLength: form.data.contractLength,
+                contractPrice: form.data.contractPrice,
+            },
+          });
         
 
         return {
+            player,
             form
         }
 
     },
     newTeamForm: async (event) => {
-        const form = await superValidate(event, newTeamSchema);
-        console.log(form);
-        if(!form.valid){
+        const teamform = await superValidate(event, newTeamSchema);
+       
+        if(!teamform.valid){
             return fail(400,{
-                form
+                teamform
             })
         }
+
+        const team = await prisma.team.create({
+            data: {
+                name: teamform.name,
+                leagueId: teamform.league,
+                team_owner: teamform.team_owner,
+                color: teamform.color,
+                id: teamform.id,
+                description: teamform.description,
+
+            },
+          });
+
         return {
-            form
+            team,
+            teamform
         }
 
 

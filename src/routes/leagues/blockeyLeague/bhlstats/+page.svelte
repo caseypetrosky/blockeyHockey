@@ -134,9 +134,6 @@ $: sort = (column) => {
 </div>
 
 
-  <pre class="text-white">
-	{JSON.stringify($page,null,2)}
-</pre>
 
 
 

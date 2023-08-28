@@ -13,6 +13,7 @@
   } from "flowbite-svelte";
   import { _processHockeyStats } from "./+page.js";
   import { superForm } from "sveltekit-superforms/client";
+  import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 
 
   
@@ -36,10 +37,20 @@ const newTeamSchema = z.object({
   const {form, errors, enhance} = superForm(data.newPlayerForm, {
     taintedMessage: "This field has been changed",
     validators: newPlayerSchema,
+     // Reset the form upon a successful result
+  resetForm: true,
+
+
+    multipleSubmits: 'prevent',
+
   });
-  const {newTeamForm, newTeamErrors, newTeamEnhance} = superForm(data.newTeamForm, {
+  const {form:teamform,erors: teamerrors,enhance: teamenhance} = superForm(data.newTeamForm, {
     taintedMessage: "This field has been changed",
     validators: newTeamSchema,
+     // Reset the form upon a successful result
+  resetForm: true,
+
+    multipleSubmits: 'prevent',
   });
 
 
@@ -99,16 +110,16 @@ const newTeamSchema = z.object({
   ];
   let contractLength;
   let lengths = [
-    { value: "1", name: "1 season" },
-    { value: "2", name: "2 seasons" },
-    { value: "3", name: "3 seasons" },
+    { value:1, name: "1 season" },
+    { value:2, name: "2 seasons" },
+    { value:3, name: "3 seasons" },
   ];
   // Team League
   let teamLeague;
   let leagues = [
-    { value: "1", name: "BHL" },
-    { value: "2", name: "NAMHL" },
-    { value: "3", name: "JBHL" },
+    { value:1, name: "BHL" },
+    { value:2, name: "NAMHL" },
+    { value:3, name: "JBHL" },
   ];
   let gameLeague;
   let homeTeamGoalie1;
@@ -118,10 +129,14 @@ const newTeamSchema = z.object({
   let awayTeamGoalie1;
   let awayTeamGoalie2;
   let awayTeamGoalie3;
-
+  let playerLeague = "1";
 </script>
 
 <div class="container mx-auto mt-4 text-white">
+
+  <SuperDebug data={$form} bind:errors={$errors} />
+  <SuperDebug data={$teamform} bind:errors={$teamerrors} />
+
 
   <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
     Admin Panel
@@ -130,7 +145,7 @@ const newTeamSchema = z.object({
    <div class="grid grid-cols-2">
 
       
-      <form method="POST" action="?/newP" use:enhance>
+      <form method="POST" action="?/newPlayerForm" use:enhance>
         <h3 class="my-4 text-xl font-medium text-gray-900 dark:text-white">
           Create A New Player
         </h3>
@@ -149,11 +164,12 @@ const newTeamSchema = z.object({
               <small class="text-red-500">{$errors.number}</small>
             {/if}
           </div>
+          
           <div class="w-full max-w-xs">
           <label for="teamId">Team ID</label>
             <select class="select select-accent w-full max-w-xs" name="teamId" bind:value={$form.teamId}>
               {#each teams as team}
-                <option value={team.value}>{team.name}</option>
+                  <option value={team.value}>{team.name}</option>
               {/each}
             </select>
             {#if $errors.teamId}
@@ -161,16 +177,14 @@ const newTeamSchema = z.object({
             {/if}
               
         </div>
-        <div class="w-full max-w-xs">
-          <label for="goalie">Goalie?</label>
-          <select class="select select-accent w-full max-w-xs" name="goalie" bind:value={$form.goalie}>
-            <option value=True>Yes</option>
-            <option selected value=False>No</option>
-          </select>
+        <div class="w-full max-w-xs form-control">
+          <label class="label text-white cursor-pointer" for="goalie">
+            <span class="label-text">Is this player a goalie?</span> 
+            <input name="goalie" type="checkbox" class="checkbox" bind:checked={$form.goalie}/>
+          </label>
           {#if $errors.goalie}
-                  <small class="text-red-500">{$errors.goalie}</small>
-            {/if}
-        </div>
+            <small class="text-red-500">{$errors.goalie}</small>
+          {/if}
 
         <div class="w-full max-w-xs">
           <label for="contractPrice">Contract Price</label>
@@ -203,10 +217,58 @@ const newTeamSchema = z.object({
         </div>
         <button type="submit"  class="btn btn-primary my-4 w-full max-w-xs">Submit New Player</button>
     </form>
-    <form method="POST" use:enhance>
+
+    <form method="POST" action="?/newTeamForm" use:teamenhance>
       <h3 class="my-4 text-xl font-medium text-gray-900 dark:text-white">
         Create A New Team
       </h3>
+      <div class="form-control w-full max-w-xs">
+        <label class="label text-white" for="teamName">Team Name</label>
+        <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="teamName" placeholder="Team Name" required bind:value={$teamform.name}/>
+        {#if $errors.name}
+          <small class="text-red-500">{$errors.name}</small>
+        {/if}
+      </div>
+      <div class="form-control w-full max-w-xs">
+        <label class="label text-white" for="teamID">Team Shorthand</label>
+        <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="teamID" placeholder="Team Shorthand" required bind:value={$teamform.id}/>
+        {#if $errors.id}
+          <small class="text-red-500">{$errors.id}</small>
+        {/if}
+      </div>
+      <div class="w-full max-w-xs">
+        <label for="leagueId">Team League</label>
+        <select class="select select-accent w-full max-w-xs" name="leagueId" bind:value={$teamform.leagueId}>
+          {#each leagues as league}
+            <option value={league.value}>{league.name}</option>
+          {/each}
+        </select>
+        {#if $errors.leagueId}
+                <small class="text-red-500">{$errors.leagueId}</small>
+          {/if}
+      </div>
+      <div class="form-control w-full max-w-xs">
+        <label class="label text-white" for="team_owner">Team Owner</label>
+        <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="team_owner" placeholder="Team Owner" required bind:value={$teamform.team_owner}/>
+        {#if $errors.team_owner}
+          <small class="text-red-500">{$errors.team_owner}</small>
+        {/if}
+      </div>
+      <div class="form-control w-full max-w-xs">
+        <label class="label text-white" for="color">Team Color Code</label>
+        <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="color" placeholder="#FFFFFF" required bind:value={$teamform.color}/>
+        {#if $errors.color}
+          <small class="text-red-500">{$errors.color}</small>
+        {/if}
+      </div>
+      <div class="form-control w-full max-w-xs">
+        <label class="label text-white" for="description">Team Color Code</label>
+        <textarea  class="textarea textarea-accent w-full max-w-xs" type="text" name="description" placeholder="Description" required bind:value={$teamform.description}/>
+        {#if $errors.description}
+          <small class="text-red-500">{$errors.description}</small>
+        {/if}
+      </div>
+      <button type="submit"  class="btn btn-primary my-4 w-full max-w-xs">Submit New Team</button>
     </form>
 
    </div>
