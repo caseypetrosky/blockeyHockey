@@ -1,7 +1,7 @@
 import prisma from '$lib/prisma';
 import { superValidate } from 'sveltekit-superforms/server';
 import { fail } from '@sveltejs/kit';
-import { z } from 'zod';
+import { boolean, z } from 'zod';
 
 const newPlayerSchema = z.object({
     username: z.string().min(3).max(16),
@@ -21,10 +21,36 @@ const newTeamSchema = z.object({
     description: z.string()});
 
 
+const newGameScehma = z.object({
+    gameTellRaw: z.string(),
+    leagueId: z.number(),
+    isPlayoffs: z.boolean(),
+    homeTeamGoalie1: z.string(),
+    homeTeamGoalie1saves: z.number(),
+    homeTeamGoalie1shotsAgainst: z.number(),
+    homeTeamGoalie2: z.string(),
+    homeTeamGoalie2saves: z.number(),
+    homeTeamGoalie2shotsAgainst: z.number(),
+    homeTeamGoalie3: z.string(),
+    homeTeamGoalie3saves: z.number(),
+    homeTeamGoalie3shotsAgainst: z.number(),
+    awayTeamGoalie1: z.string(),
+    awayTeamGoalie1saves: z.number(),
+    awayTeamGoalie1shotsAgainst: z.number(),
+    awayTeamGoalie2: z.string(),
+    awayTeamGoalie2saves: z.number(),
+    awayTeamGoalie2shotsAgainst: z.number(),
+    awayTeamGoalie3: z.string(),
+    awayTeamGoalie3saves: z.number(),
+    awayTeamGoalie3shotsAgainst: z.number(),
+    
+})
+
 
 export const load = async (event) => {
         const newPlayerForm = await superValidate(event, newPlayerSchema);
         const newTeamForm = await superValidate(event, newTeamSchema);
+        const newGameForm = await superValidate(event, newGameScehma);
         const team = await prisma.team.findMany({
             select: {
                 name: true,
@@ -56,6 +82,7 @@ export const load = async (event) => {
             team,
             newPlayerForm,
             newTeamForm,
+            newGameForm,
         }
 }
 const getUUID = async (username) => {
@@ -139,6 +166,33 @@ export const actions = {
 
 
     },
+    newGameForm: async (event) => {
+        const gameform = await superValidate(event, newGameScehma);
+        if(!gameform.valid){
+            return fail(400,{
+                gameform
+            })
+        }
+        console.log(gameform);
+        /*
+        const game = await prisma.game.create({
+            data: {
+                gameTellRaw: gameform.gameTellRaw,
+                leagueId: gameform.leagueId,
+                isPlayoffs: gameform.isPlayoffs,
+                homeGoalie1: gameform.homeGoalie1,
+                homeGoalie2: gameform.homeGoalie2,
+                homeGoalie3: gameform.homeGoalie3,
+                awayGoalie1: gameform.awayGoalie1,
+                awayGoalie2: gameform.awayGoalie2,
+                awayGoalie3: gameform.awayGoalie3,
+            },
+          });*/
+
+        return {
+            gameform
+        }
+    }
 };
 
 

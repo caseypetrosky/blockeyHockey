@@ -14,6 +14,7 @@
   import { _processHockeyStats } from "./+page.js";
   import { superForm } from "sveltekit-superforms/client";
   import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
+  import AutoComplete from 'simple-svelte-autocomplete';
 
 
   
@@ -32,15 +33,42 @@ const newTeamSchema = z.object({
     team_owner: z.string().min(3),
     color: z.string().min(3),
     id: z.string().min(1).max(4),
-    description: z.string()});
+    description: z.string()
+});
+
+const newGameScehma = z.object({
+    gameTellRaw: z.string(),
+    leagueId: z.number(),
+    isPlayoffs: z.boolean(),
+    homeTeamGoalie1: z.string(),
+    homeTeamGoalie1saves: z.number(),
+    homeTeamGoalie1shotsAgainst: z.number(),
+    homeTeamGoalie2: z.string(),
+    homeTeamGoalie2saves: z.number(),
+    homeTeamGoalie2shotsAgainst: z.number(),
+    homeTeamGoalie3: z.string(),
+    homeTeamGoalie3saves: z.number(),
+    homeTeamGoalie3shotsAgainst: z.number(),
+    awayTeamGoalie1: z.string(),
+    awayTeamGoalie1saves: z.number(),
+    awayTeamGoalie1shotsAgainst: z.number(),
+    awayTeamGoalie2: z.string(),
+    awayTeamGoalie2saves: z.number(),
+    awayTeamGoalie2shotsAgainst: z.number(),
+    awayTeamGoalie3: z.string(),
+    awayTeamGoalie3saves: z.number(),
+    awayTeamGoalie3shotsAgainst: z.number(),
+
+})
+
+
+
 
   const {form, errors, enhance} = superForm(data.newPlayerForm, {
     taintedMessage: "This field has been changed",
     validators: newPlayerSchema,
      // Reset the form upon a successful result
-  resetForm: true,
-
-
+    resetForm: true,
     multipleSubmits: 'prevent',
 
   });
@@ -48,12 +76,17 @@ const newTeamSchema = z.object({
     taintedMessage: "This field has been changed",
     validators: newTeamSchema,
      // Reset the form upon a successful result
-  resetForm: true,
-
+    resetForm: true,
     multipleSubmits: 'prevent',
   });
+  const{form:gameForm, errors:gameErrors, enhance:gameEnhance} = superForm(data.newGameForm, {
+    taintedMessage: "This field has been changed",
+    validators: newGameScehma,
+    resetForm: true,
+    multipleSubmits: 'prevent',
+  })
 
-
+  
 
   let gameData = ``;
   let newGame = ``;
@@ -136,6 +169,8 @@ const newTeamSchema = z.object({
 
   <SuperDebug data={$form} bind:errors={$errors} />
   <SuperDebug data={$teamform} bind:errors={$teamerrors} />
+  <SuperDebug data={$gameForm} bind:errors={$gameErrors} />
+
 
 
   <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
@@ -262,7 +297,7 @@ const newTeamSchema = z.object({
         {/if}
       </div>
       <div class="form-control w-full max-w-xs">
-        <label class="label text-white" for="description">Team Color Code</label>
+        <label class="label text-white" for="description">Team Page Description</label>
         <textarea  class="textarea textarea-accent w-full max-w-xs" type="text" name="description" placeholder="Description" required bind:value={$teamform.description}/>
         {#if $errors.description}
           <small class="text-red-500">{$errors.description}</small>
@@ -272,47 +307,49 @@ const newTeamSchema = z.object({
     </form>
 
    </div>
-  <Button on:click={() => (teamCreate = true)}>New Team Creation</Button>
 
-  <Modal bind:open={teamCreate} size="lg" autoclose={false} class="w-full">
-    <form class="flex flex-col space-y-6" action="#">
-      <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-        Create A New Team
-      </h3>
+   <form method="POST" class="max-w-xl" action="?/newGameForm" use:gameEnhance>
+    <h3 class="my-4 text-xl font-medium text-gray-900 dark:text-white">
+      Input a new Game
+    </h3>
+    <div class="w-full ">
+      <label for="gameleagueId">Game League</label>
+      <select class="select select-accent w-full " name="gameleagueId" bind:value={$gameForm.leagueId}>
+        {#each leagues as league}
+          <option value={league.value}>{league.name}</option>
+        {/each}
+      </select>
+      {#if $errors.leagueId}
+              <small class="text-red-500">{$errors.leagueId}</small>
+        {/if}
+    </div>
+    <div class="w-fullform-control">
+      <label class="label text-white cursor-pointer" for="playoffs">
+        <span class="label-text">Is this a playoff game?</span> 
+        <input name="playoffs" type="checkbox" class="checkbox" bind:checked={$gameForm.isPlayoffs}/>
+      </label>
+      {#if $errors.isPlayoffs}
+        <small class="text-red-500">{$errors.isPlayoffs}</small>
+      {/if}
+    </div>
+    <div class="form-control w-full ">
+      <label class="label text-white" for="tellraw">Tell Raw Output</label>
+      <textarea  class="textarea textarea-accent w-full" type="text" name="tellraw" placeholder="Tell Raw" required bind:value={$gameForm.gameTellRaw}/>
+      {#if $errors.gameTellRaw}
+        <small class="text-red-500">{$errors.gameTellRaw}</small>
+      {/if}
+    </div>
+    <div class="form-control w-full">
+      <label class="label text-white" for="teamName">Team Name</label>
+      <input class="input input-bordered input-accent w-full " type="text" name="teamName" placeholder="Team Name" required bind:value={$teamform.name}/>
+      {#if $errors.name}
+        <small class="text-red-500">{$errors.name}</small>
+      {/if}
+    </div>
+    
 
-      <Label class="space-y-2">
-        <span>Team Name</span>
-        <Input type="text" name="teamName" placeholder="Team Name" required />
-      </Label>
-
-      <Label class="space-y-2">
-        <span>Team Shorthand</span>
-        <Input
-          type="text"
-          name="teamID"
-          placeholder="Team Shorthand"
-          required
-        />
-      </Label>
-
-      <Label class="space-y-2">
-        <span>Team Owner</span>
-        <Input
-          type="text"
-          name="teamOwner"
-          placeholder="Team Owner IGN"
-          required
-        />
-      </Label>
-
-      <Label class="space-y-2">
-        <span>Team League</span>
-        <Select class="mt-2" items={leagues} bind:value={teamLeague} />
-      </Label>
-
-      <Button type="submit" class="w-full1">Submit New Team</Button>
-    </form>
-  </Modal>
+   </form>
+  
 
   <Button on:click={() => (gameCreate = true)}>New Game</Button>
 
