@@ -81,11 +81,6 @@ export const load = async (event) => {
                 }},
             });
         const players = await prisma.player.findMany({
-            select: {
-                username: true,
-                uuid: true,
-                teamId: true,
-            }
         });
         
         return {
@@ -109,6 +104,8 @@ const getUUID = async (username) => {
         return null;
     }
 };
+
+
 
 export const actions = {
     newPlayerForm: async (event) => {

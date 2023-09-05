@@ -16,8 +16,21 @@
   import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   import AutoComplete from 'simple-svelte-autocomplete';
 
-
   
+
+    const columns = [
+      { key: 'username', label: 'Username' },
+      { key: 'number', label: 'Number' },
+      { key: 'teamId', label: 'Team ID' },
+      { key: 'goalie', label: 'Goalie' },
+      {key: 'awards', label: 'Awards'},
+      {key: 'leagueRoles', label: 'League Roles'},
+      { key: 'contractType', label: 'Contract Type' },
+      { key: 'contractLength', label: 'Contract Length' },
+      { key: 'contractPrice', label: 'Contract Price' },
+    ];
+    
+
   const newPlayerSchema = z.object({
     username: z.string().min(3).max(16),
     number: z.number().min(0).max(99),
@@ -352,7 +365,7 @@ const newGameScehma = z.object({
         <small class="text-red-500">{$errors.gameTellRaw}</small>
       {/if}
     </div>
-    <div class="form-control w-full">
+    <div class="form-control w-full gap-3">
       <label class="label text-white" for="homeTeamGoalie1">Home Team Goalie 1</label>
       <AutoComplete
         class="input input-bordered input-accent w-full"
@@ -375,16 +388,8 @@ const newGameScehma = z.object({
           {/if}
         </div>
     </div>
-    <div class="collapse bg-base-200">
-  <input type="checkbox" class="peer" /> 
-  <div class="collapse-title bg-primary text-primary-content peer-checked:bg-secondary peer-checked:text-secondary-content">
-    Click me to show/hide content
-  </div>
-  <div class="collapse-content bg-primary text-primary-content peer-checked:bg-secondary peer-checked:text-secondary-content"> 
-    <p>hello</p>
-  </div>
-</div>
-    <div class="form-control w-full">
+    
+    <div class="form-control w-full gap-3">
       <label class="label text-white" for="homeTeamGoalie2">Home Team Goalie 2</label>
       <AutoComplete
         class="input input-bordered input-accent w-full"
@@ -406,295 +411,84 @@ const newGameScehma = z.object({
             <small class="text-red-500">{$errors.homeTeamGoalie2shotsAgainst}</small>
           {/if}
         </div>
-    
+    </div>
+    <div class="form-control w-full gap-3">
+      <label class="label text-white" for="homeTeamGoalie3">Home Team Goalie 3</label>
+      <AutoComplete
+        class="input input-bordered input-accent w-full"
+        items={bhlGoalies.map((goalie) => goalie.name)}
+        bind:value={$gameForm.homeTeamGoalie3.username}
+        placeholder="Home Team Goalie 3"></AutoComplete>
+      {#if $errors.homeTeamGoalie3}
+        <small class="text-red-500">{$errors.homeTeamGoalie3}</small>
+      {/if}
+      <div class="flex flex-row gap-3">
+          <label class="label text-white" for="homeTeamGoalie3saves">Home Team Goalie 3 Saves</label>
+          <input class="input input-bordered input-accent max-w-xs" type="number" name="homeTeamGoalie3saves" placeholder="Saves" required bind:value={$gameForm.homeTeamGoalie3.saves}/>
+          {#if $errors.homeTeamGoalie3saves}
+            <small class="text-red-500">{$errors.homeTeamGoalie3saves}</small>
+          {/if}
+          <label class="label text-white" for="homeTeamGoalie3shotsAgainst">Home Team Goalie 3 Shots Against</label>
+          <input class="input input-bordered input-accent max-w-xs" type="number" name="homeTeamGoalie3shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.homeTeamGoalie3.shotsAgainst}/>
+          {#if $errors.homeTeamGoalie3shotsAgainst}
+            <small class="text-red-500">{$errors.homeTeamGoalie3shotsAgainst}</small>
+          {/if}
+        </div>
+    </div>
+    <div class="form-control w-full gap-3">
+      <label class="label text-white" for="awayTeamGoalie1">Away Team Goalie 1</label>
+      <AutoComplete
+        class="input input-bordered input-accent w-full"
+        items={bhlGoalies.map((goalie) => goalie.name)}
+        bind:value={$gameForm.awayTeamGoalie1.username}
+        placeholder="Away Team Goalie 1"></AutoComplete>
+      {#if $errors.awayTeamGoalie1}
+        <small class="text-red-500">{$errors.awayTeamGoalie1}</small>
+      {/if}
+      <div class="flex flex-row gap-3">
+          <label class="label text-white" for="awayTeamGoalie1saves">Away Team Goalie 1 Saves</label>
+          <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie1saves" placeholder="Saves" required bind:value={$gameForm.awayTeamGoalie1.saves}/>
+          {#if $errors.awayTeamGoalie1saves}
+            <small class="text-red-500">{$errors.awayTeamGoalie1saves}</small>
+          {/if}
+          <label class="label text-white" for="awayTeamGoalie1shotsAgainst">Away Team Goalie 1 Shots Against</label>
+          <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie1shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.awayTeamGoalie1.shotsAgainst}/>
+          {#if $errors.awayTeamGoalie1shotsAgainst}
+            <small class="text-red-500">{$errors.awayTeamGoalie1shotsAgainst}</small>
+          {/if}
+        </div>
+    </div>
+
+    <button type="submit"  class="btn btn-primary my-4 w-full max-w-xs">Submit New Game</button>
 
    </form>
-  
+  <div class="overflow-x-auto">
+   <table class="table  text-white">
+    <thead>
+      {#each columns as col}
+        <th class="text-white text-lg">{col.label}</th>
+      {/each}
+    </thead>
+    <tbody>
+      {#each data.players as player}
+        <tr class="hover">
+          <td >{player.username}</td>
+          <td contenteditable="true" on:blur={handleBlur}>{player.number}</td>
+          <td>{player.teamId}</td>
+          <td>{player.goalie}</td>
+          <td>{player.awards}</td>
+          <td>{player.league_roles}</td>
+          <td>{player.contractTier}</td>
+          <td>{player.contractLength}</td>
+          <td>{player.contractPrice}</td>
+        </tr>
+      {/each}
+    
+   </table>
+</div>
 
-  <Button on:click={() => (gameCreate = true)}>New Game</Button>
 
-  <Modal bind:open={gameCreate} size="lg" autoclose={false} class="w-full">
-    <form
-      class="space-y-6"
-      on:submit={(newGame = _processHockeyStats(gameData))}
-    >
-      <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-        Input A New Game
-      </h3>
 
-      <Label class="space-y-2">
-        <span>League</span>
-        <Select class="mt-2" items={leagues} bind:value={gameLeague} />
-      </Label>
-
-      <Label class="space-y-2">
-        <span>Tell Raw Output</span>
-        <Textarea
-          type="text"
-          rows="10"
-          class="resize"
-          bind:value={gameData}
-          placeholder="Raw Output"
-          required
-        />
-      </Label>
-      <Label class="space-y-2">
-        <span>Is a Playoff Game?</span>
-        <div class="flex items-start">
-          <Checkbox>Playoff Game</Checkbox>
-        </div>
-      </Label>
-      <div class="grid grid-cols-3">
-        <Label class="space-y-2">
-          <span>Home Team Goalie</span>
-          {#if gameLeague == 1}
-            <Select
-              class="mt-2"
-              items={bhlGoalies}
-              bind:value={homeTeamGoalie1}
-            />
-          {:else if gameLeague == 2}
-            <Select
-              class="mt-2"
-              items={namhlGoalies}
-              bind:value={homeTeamGoalie1}
-            />
-          {:else if gameLeague == 3}
-            <Select
-              class="mt-2"
-              items={jbhlGoalies}
-              bind:value={homeTeamGoalie1}
-            />
-          {/if}
-        </Label>
-        <Label class="space-y-2">
-          <span>Saves</span>
-          <Input
-            type="number"
-            name="homeTeamGoalie1saves"
-            placeholder="Saves"
-            required
-          />
-        </Label>
-        <Label class="space-y-2">
-          <span>Shots Against</span>
-          <Input
-            type="number"
-            name="homeTeamGoalie1shotsAgainst"
-            placeholder="Shots Against"
-            required
-          />
-        </Label>
-      </div>
-        <div class="grid grid-cols-3">
-          <Label class="space-y-2">
-            <span>Home Team Goalie2</span>
-            {#if gameLeague == 1}
-              <Select
-                class="mt-2"
-                items={bhlGoalies}
-                bind:value={homeTeamGoalie2}
-              />
-            {:else if gameLeague == 2}
-              <Select
-                class="mt-2"
-                items={namhlGoalies}
-                bind:value={homeTeamGoalie2}
-              />
-            {:else if gameLeague == 3}
-              <Select
-                class="mt-2"
-                items={jbhlGoalies}
-                bind:value={homeTeamGoalie2}
-              />
-            {/if}
-          </Label>
-          <Label class="space-y-2">
-            <span>Saves</span>
-            <Input
-              type="number"
-              name="homeTeamGoalie2saves"
-              placeholder="Saves"
-              
-            />
-          </Label>
-          <Label class="space-y-2">
-            <span>Shots Against</span>
-            <Input
-              type="number"
-              name="homeTeamGoalie2shotsAgainst"
-              placeholder="Shots Against"
-              
-            />
-          </Label>
-        </div>
-        <div class="grid grid-cols-3">
-          <Label class="space-y-2">
-            <span>Home Team Goalie3</span>
-            {#if gameLeague == 1}
-              <Select
-                class="mt-2"
-                items={bhlGoalies}
-                bind:value={homeTeamGoalie3}
-              />
-            {:else if gameLeague == 2}
-              <Select
-                class="mt-2"
-                items={namhlGoalies}
-                bind:value={homeTeamGoalie3}
-              />
-            {:else if gameLeague == 3}
-              <Select
-                class="mt-2"
-                items={jbhlGoalies}
-                bind:value={homeTeamGoalie3}
-              />
-            {/if}
-          </Label>
-          <Label class="space-y-2">
-            <span>Saves</span>
-            <Input
-              type="number"
-              name="homeTeamGoalie3saves"
-              placeholder="Saves"
-              
-            />
-          </Label>
-          <Label class="space-y-2">
-            <span>Shots Against</span>
-            <Input
-              type="number"
-              name="homeTeamGoalie3shotsAgainst"
-              placeholder="Shots Against"
-              
-            />
-          </Label>
-        </div>
-
-        <div class="grid grid-cols-3">
-          <Label class="space-y-2">
-            <span>Away Team Goalie</span>
-            {#if gameLeague == 1}
-              <Select
-                class="mt-2"
-                items={bhlGoalies}
-                bind:value={awayTeamGoalie1}
-              />
-            {:else if gameLeague == 2}
-              <Select
-                class="mt-2"
-                items={namhlGoalies}
-                bind:value={homeTeamGoalie1}
-              />
-            {:else if gameLeague == 3}
-              <Select
-                class="mt-2"
-                items={jbhlGoalies}
-                bind:value={homeTeamGoalie1}
-              />
-            {/if}
-          </Label>
-          <Label class="space-y-2">
-            <span>Saves</span>
-            <Input type="number" name="saves" placeholder="Saves"  required/>
-          </Label>
-          <Label class="space-y-2">
-            <span>Shots Against</span>
-            <Input
-              type="number"
-              name="shotsAgainst"
-              placeholder="Shots Against"
-              required
-            />
-          </Label>
-        </div>
-        <div class="grid grid-cols-3">
-          <Label class="space-y-2">
-            <span>Away Team Goalie2</span>
-            {#if gameLeague == 1}
-              <Select
-                class="mt-2"
-                items={bhlGoalies}
-                bind:value={awayTeamGoalie2}
-              />
-            {:else if gameLeague == 2}
-              <Select
-                class="mt-2"
-                items={namhlGoalies}
-                bind:value={awayTeamGoalie2}
-              />
-            {:else if gameLeague == 3}
-              <Select
-                class="mt-2"
-                items={jbhlGoalies}
-                bind:value={awayTeamGoalie2}
-              />
-            {/if}
-          </Label>
-          <Label class="space-y-2">
-            <span>Saves</span>
-            <Input
-              type="number"
-              name="awayTeamGoalie2saves"
-              placeholder="Saves"
-              
-            />
-          </Label>
-          <Label class="space-y-2">
-            <span>Shots Against</span>
-            <Input
-              type="number"
-              name="awayTeamGoalie2shotsAgainst"
-              placeholder="Shots Against"
-              
-            />
-          </Label>
-        </div>
-        <div class="grid grid-cols-3">
-          <Label class="space-y-2">
-            <span>Away Team Goalie3</span>
-            {#if gameLeague == 1}
-              <Select
-                class="mt-2"
-                items={bhlGoalies}
-                bind:value={awayTeamGoalie3}
-              />
-            {:else if gameLeague == 2}
-              <Select
-                class="mt-2"
-                items={namhlGoalies}
-                bind:value={awayTeamGoalie3}
-              />
-            {:else if gameLeague == 3}
-              <Select
-                class="mt-2"
-                items={jbhlGoalies}
-                bind:value={awayTeamGoalie3}
-              />
-            {/if}
-          </Label>
-          <Label class="space-y-2">
-            <span>Saves</span>
-            <Input
-              type="number"
-              name="awayTeamGoalie3saves"
-              placeholder="Saves"
-              
-            />
-          </Label>
-          <Label class="space-y-2">
-            <span>Shots Against</span>
-            <Input
-              type="number"
-              name="awayTeamGoalie3shotsAgainst"
-              placeholder="Shots Against"
-              
-            />
-          </Label>
-        </div>
-        <Button type="submit" class="w-full1">Submit New Game Score</Button>
-    </form>
-  </Modal>
 </div>
 
 <pre>
