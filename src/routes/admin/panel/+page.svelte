@@ -16,6 +16,7 @@
   import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   import AutoComplete from 'simple-svelte-autocomplete';
 
+  let bhlGoalies = [];
   
 
     const columns = [
@@ -132,10 +133,10 @@ const newGameScehma = z.object({
   }
 
   // Goalie select
-  let bhlGoalies = [];
+  let bhlLeagueGoalies = [];
   //select goalies in the data.goalies array that are in the BHL
   $: {
-    bhlGoalies = data.goalies
+    bhlLeagueGoalies = data.goalies
       ? data.goalies
           .filter((goalie) => goalie.team.leagueId == 1)
           .map((goalie) => ({ value: goalie.uuid, name: goalie.username }))
@@ -189,6 +190,26 @@ const newGameScehma = z.object({
   let awayTeamGoalie2;
   let awayTeamGoalie3;
   let playerLeague = "1";
+
+
+  let homegoalie2visible = false;
+  let homegoalie3visible = false;
+  let awaygoalie2visible = false;
+  let awaygoalie3visible = false;
+
+  function homeGoalie2() {
+    homegoalie2visible = !homegoalie2visible;
+  }
+  function homeGoalie3() {
+    homegoalie3visible = !homegoalie3visible;
+  }
+  function awayGoalie2() {
+    awaygoalie2visible = !awaygoalie2visible;
+  }
+  function awayGoalie3() {
+    awaygoalie3visible = !awaygoalie3visible;
+  }
+
 </script>
 
 <div class="container mx-auto mt-4 text-white">
@@ -349,6 +370,15 @@ const newGameScehma = z.object({
               <small class="text-red-500">{$errors.leagueId}</small>
         {/if}
     </div>
+    
+    {#if $gameForm.leagueId == 1}
+      {bhlGoalies = bhlLeagueGoalies}
+    {:else if  $gameForm.leagueId == 2}
+      {bhlGoalies = namhlGoalies}
+    {:else if  $gameForm.leagueId == 3}
+      {bhlGoalies = jbhlGoalies}
+    {/if}
+
     <div class="w-fullform-control">
       <label class="label text-white cursor-pointer" for="playoffs">
         <span class="label-text">Is this a playoff game?</span> 
@@ -358,6 +388,8 @@ const newGameScehma = z.object({
         <small class="text-red-500">{$errors.isPlayoffs}</small>
       {/if}
     </div>
+
+    <!--tell raw-->
     <div class="form-control w-full ">
       <label class="label text-white" for="tellraw">Tell Raw Output</label>
       <textarea  class="textarea textarea-accent w-full" type="text" name="tellraw" placeholder="Tell Raw" required bind:value={$gameForm.gameTellRaw}/>
@@ -389,6 +421,11 @@ const newGameScehma = z.object({
         </div>
     </div>
     
+    <button on:click={homeGoalie2} type="button" class="btn btn-primary">Show Home Goalie 2</button>
+    <button on:click={homeGoalie3} type="button" class="btn btn-primary">Show Home Goalie 3</button>
+
+
+{#if homegoalie2visible}
     <div class="form-control w-full gap-3">
       <label class="label text-white" for="homeTeamGoalie2">Home Team Goalie 2</label>
       <AutoComplete
@@ -412,6 +449,9 @@ const newGameScehma = z.object({
           {/if}
         </div>
     </div>
+{/if}
+
+{#if homegoalie3visible}
     <div class="form-control w-full gap-3">
       <label class="label text-white" for="homeTeamGoalie3">Home Team Goalie 3</label>
       <AutoComplete
@@ -435,6 +475,7 @@ const newGameScehma = z.object({
           {/if}
         </div>
     </div>
+{/if}
     <div class="form-control w-full gap-3">
       <label class="label text-white" for="awayTeamGoalie1">Away Team Goalie 1</label>
       <AutoComplete
@@ -458,6 +499,62 @@ const newGameScehma = z.object({
           {/if}
         </div>
     </div>
+    <button on:click={awayGoalie2} type="button" class="btn btn-primary">Show Away Goalie 2</button>
+    <button on:click={awayGoalie3} type="button" class="btn btn-primary">Show Away Goalie 3</button>
+
+{#if awaygoalie2visible}
+    <div class="form-control w-full gap-3">
+      <label class="label text-white" for="awayTeamGoalie2">Away Team Goalie 2</label>
+      <AutoComplete
+        class="input input-bordered input-accent w-full"
+        items={bhlGoalies.map((goalie) => goalie.name)}
+        bind:value={$gameForm.awayTeamGoalie2.username}
+        placeholder="Away Team Goalie 2"></AutoComplete>
+      {#if $errors.awayTeamGoalie2}
+        <small class="text-red-500">{$errors.awayTeamGoalie2}</small>
+      {/if}
+      <div class="flex flex-row gap-3">
+          <label class="label text-white" for="awayTeamGoalie2saves">Away Team Goalie 2 Saves</label>
+          <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie2saves" placeholder="Saves" required bind:value={$gameForm.awayTeamGoalie2.saves}/>
+          {#if $errors.awayTeamGoalie2saves}
+            <small class="text-red-500">{$errors.awayTeamGoalie2saves}</small>
+          {/if}
+          <label class="label text-white" for="awayTeamGoalie2shotsAgainst">Away Team Goalie 2 Shots Against</label>
+          <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie2shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.awayTeamGoalie2.shotsAgainst}/>
+          {#if $errors.awayTeamGoalie2shotsAgainst}
+            <small class="text-red-500">{$errors.awayTeamGoalie2shotsAgainst}</small>
+          {/if}
+        </div>
+    </div>
+{/if}
+
+{#if awaygoalie3visible}
+
+    <div class="form-control w-full gap-3">
+      <label class="label text-white" for="awayTeamGoalie3">Away Team Goalie 3</label>
+      <AutoComplete
+        class="input input-bordered input-accent w-full"
+        items={bhlGoalies.map((goalie) => goalie.name)}
+        bind:value={$gameForm.awayTeamGoalie3.username}
+        placeholder="Away Team Goalie 3"></AutoComplete>
+      {#if $errors.awayTeamGoalie3}
+        <small class="text-red-500">{$errors.awayTeamGoalie3}</small>
+      {/if}
+      <div class="flex flex-row gap-3">
+          <label class="label text-white" for="awayTeamGoalie3saves">Away Team Goalie 3 Saves</label>
+          <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie3saves" placeholder="Saves" required bind:value={$gameForm.awayTeamGoalie3.saves}/>
+          {#if $errors.awayTeamGoalie3saves}
+            <small class="text-red-500">{$errors.awayTeamGoalie3saves}</small>
+          {/if}
+          <label class="label text-white" for="awayTeamGoalie3shotsAgainst">Away Team Goalie 3 Shots Against</label>
+          <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie3shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.awayTeamGoalie3.shotsAgainst}/>
+          {#if $errors.awayTeamGoalie3shotsAgainst}
+            <small class="text-red-500">{$errors.awayTeamGoalie3shotsAgainst}</small>
+          {/if}
+        </div>
+    </div>
+{/if}
+
 
     <button type="submit"  class="btn btn-primary my-4 w-full max-w-xs">Submit New Game</button>
 
@@ -473,7 +570,7 @@ const newGameScehma = z.object({
       {#each data.players as player}
         <tr class="hover">
           <td >{player.username}</td>
-          <td contenteditable="true" on:blur={handleBlur}>{player.number}</td>
+          <td contenteditable="true" on:blur={console.log("hello")}>{player.number}</td>
           <td>{player.teamId}</td>
           <td>{player.goalie}</td>
           <td>{player.awards}</td>
