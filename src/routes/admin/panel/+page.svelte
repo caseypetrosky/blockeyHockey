@@ -1,3 +1,9 @@
+<!-- FILEPATH: /Users/casey/Documents/GitHub/blockeyHockey/src/routes/admin/panel/+page.svelte -->
+
+<!--
+This file contains the code for the admin panel page of the Blockey Hockey web app. It imports various Svelte components and libraries to create forms and modals for creating new players, teams, and games. It also includes logic for selecting goalies and contracts, and for displaying and hiding certain form fields based on user input.
+-->
+
 <script>
   import { page } from "$app/stores";
   import { z } from "zod";
@@ -16,22 +22,23 @@
   import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   import AutoComplete from 'simple-svelte-autocomplete';
 
+  // Initialize an empty array to hold BHL goalies
   let bhlGoalies = [];
-  
 
-    const columns = [
-      { key: 'username', label: 'Username' },
-      { key: 'number', label: 'Number' },
-      { key: 'teamId', label: 'Team ID' },
-      { key: 'goalie', label: 'Goalie' },
-      {key: 'awards', label: 'Awards'},
-      {key: 'leagueRoles', label: 'League Roles'},
-      { key: 'contractType', label: 'Contract Type' },
-      { key: 'contractLength', label: 'Contract Length' },
-      { key: 'contractPrice', label: 'Contract Price' },
-    ];
-    
+  // Define the columns for the player table
+  const columns = [
+    { key: 'username', label: 'Username' },
+    { key: 'number', label: 'Number' },
+    { key: 'teamId', label: 'Team ID' },
+    { key: 'goalie', label: 'Goalie' },
+    {key: 'awards', label: 'Awards'},
+    {key: 'leagueRoles', label: 'League Roles'},
+    { key: 'contractType', label: 'Contract Type' },
+    { key: 'contractLength', label: 'Contract Length' },
+    { key: 'contractPrice', label: 'Contract Price' },
+  ];
 
+  // Define the validation schema for creating a new player
   const newPlayerSchema = z.object({
     username: z.string().min(3).max(16),
     number: z.number().min(0).max(99),
@@ -40,17 +47,20 @@
     contractType: z.enum(['Pro', 'Superstar', 'Amateur']),
     contractLength: z.number().min(1).max(3),
     contractPrice: z.number().min(1500).max(15000),
-});
-const newTeamSchema = z.object({
+  });
+
+  // Define the validation schema for creating a new team
+  const newTeamSchema = z.object({
     name: z.string().min(3),
     leagueId: z.number(),
     team_owner: z.string().min(3),
     color: z.string().min(3),
     id: z.string().min(1).max(4),
     description: z.string()
-});
+  });
 
-const newGameScehma = z.object({
+  // Define the validation schema for creating a new game
+  const newGameScehma = z.object({
     gameTellRaw: z.string(),
     leagueId: z.number(),
     isPlayoffs: z.boolean(),
@@ -84,84 +94,48 @@ const newGameScehma = z.object({
       saves: z.number(),
       shotsAgainst: z.number(),
     }),
+  });
 
-})
-
-
-
-
+  // Create a new superform for the new player form
   const {form, errors, enhance} = superForm(data.newPlayerForm, {
     taintedMessage: "This field has been changed",
     validators: newPlayerSchema,
-     // Reset the form upon a successful result
     resetForm: true,
     multipleSubmits: 'prevent',
-
   });
+
+  // Create a new superform for the new team form
   const {form:teamform,erors: teamerrors,enhance: teamenhance} = superForm(data.newTeamForm, {
     taintedMessage: "This field has been changed",
     validators: newTeamSchema,
-     // Reset the form upon a successful result
     resetForm: true,
     multipleSubmits: 'prevent',
   });
+
+  // Create a new superform for the new game form
   const{form:gameForm, errors:gameErrors, enhance:gameEnhance} = superForm(data.newGameForm, {
     dataType: 'json',
     taintedMessage: "This field has been changed",
     validators: newGameScehma,
     resetForm: true,
     multipleSubmits: 'prevent',
-  })
+  });
 
-  
-
+  // Initialize variables for storing game data and new game data
   let gameData = ``;
   let newGame = ``;
 
-  //modals
+  // Initialize variables for showing and hiding modals
   let playerCreate = false;
   let teamCreate = false;
   let gameCreate = false;
 
-  // Team select
+  // Initialize variables for selected team, goalie, contract type, contract length, team league, and game league
   let selected;
   let teams = [];
-  $: {
-    teams = data.team
-      ? data.team.map((team) => ({ value: team.id, name: team.name }))
-      : [];
-  }
-
-  // Goalie select
   let bhlLeagueGoalies = [];
-  //select goalies in the data.goalies array that are in the BHL
-  $: {
-    bhlLeagueGoalies = data.goalies
-      ? data.goalies
-          .filter((goalie) => goalie.team.leagueId == 1)
-          .map((goalie) => ({ value: goalie.uuid, name: goalie.username }))
-      : [];
-  }
   let namhlGoalies = [];
-  //select goalies in the data.goalies array that are in the NAMHL
-  $: {
-    namhlGoalies = data.goalies
-      ? data.goalies
-          .filter((goalie) => goalie.team.leagueId == 2)
-          .map((goalie) => ({ value: goalie.uuid, name: goalie.username }))
-      : [];
-  }
   let jbhlGoalies = [];
-  //select goalies in the data.goalies array that are in the JBHL
-  $: {
-    jbhlGoalies = data.goalies
-      ? data.goalies
-          .filter((goalie) => goalie.team.leagueId == 3)
-          .map((goalie) => ({ value: goalie.uuid, name: goalie.username }))
-      : [];
-  }
-
-  // Contract select
   let contractType;
   let contractTypes = [
     { value: "Superstar", name: "Superstar" },
@@ -174,7 +148,6 @@ const newGameScehma = z.object({
     { value:2, name: "2 seasons" },
     { value:3, name: "3 seasons" },
   ];
-  // Team League
   let teamLeague;
   let leagues = [
     { value:1, name: "BHL" },
@@ -185,18 +158,18 @@ const newGameScehma = z.object({
   let homeTeamGoalie1;
   let homeTeamGoalie2;
   let homeTeamGoalie3;
-
   let awayTeamGoalie1;
   let awayTeamGoalie2;
   let awayTeamGoalie3;
   let playerLeague = "1";
 
-
+  // Initialize variables for showing and hiding certain form fields based on user input
   let homegoalie2visible = false;
   let homegoalie3visible = false;
   let awaygoalie2visible = false;
   let awaygoalie3visible = false;
 
+  // Define functions for showing and hiding certain form fields based on user input
   function homeGoalie2() {
     homegoalie2visible = !homegoalie2visible;
   }
@@ -208,6 +181,11 @@ const newGameScehma = z.object({
   }
   function awayGoalie3() {
     awaygoalie3visible = !awaygoalie3visible;
+  }
+
+  //create an update player function for the table
+  async function updatePlayer(id, field, value) {
+    console.log(id, field, value);
   }
 
 </script>
@@ -569,19 +547,21 @@ const newGameScehma = z.object({
     <tbody>
       {#each data.players as player}
         <tr class="hover">
-          <td >{player.username}</td>
-          <td contenteditable="true" on:blur={console.log("hello")}>{player.number}</td>
-          <td>{player.teamId}</td>
-          <td>{player.goalie}</td>
-          <td>{player.awards}</td>
-          <td>{player.league_roles}</td>
-          <td>{player.contractTier}</td>
-          <td>{player.contractLength}</td>
-          <td>{player.contractPrice}</td>
+          <td>{player.username}</td>
+          <td contenteditable="true" on:blur={() => updatePlayer(player.id, 'number', $event.target.innerText)}>{player.number}</td>
+          <td contenteditable="true" on:blur={() => updatePlayer(player.id, 'teamId', $event.target.innerText)}>{player.teamId}</td>
+          <td contenteditable="true" on:blur={() => updatePlayer(player.id, 'goalie', $event.target.innerText)}>{player.goalie}</td>
+          <td contenteditable="true" on:blur={() => updatePlayer(player.id, 'awards', $event.target.innerText)}>{player.awards}</td>
+          <td contenteditable="true" on:blur={() => updatePlayer(player.id, 'league_roles', $event.target.innerText)}>{player.league_roles}</td>
+          <td contenteditable="true" on:blur={() => updatePlayer(player.id, 'contractTier', $event.target.innerText)}>{player.contractTier}</td>
+          <td contenteditable="true" on:blur={() => updatePlayer(player.id, 'contractLength', $event.target.innerText)}>{player.contractLength}</td>
+          <td contenteditable="true" on:blur={() => updatePlayer(player.id, 'contractPrice', $event.target.innerText)}>{player.contractPrice}</td>
         </tr>
       {/each}
-    
-   </table>
+    </tbody>
+
+  
+    </table>
 </div>
 
 
