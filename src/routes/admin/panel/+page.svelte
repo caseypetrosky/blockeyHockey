@@ -16,6 +16,7 @@
   import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   import AutoComplete from 'simple-svelte-autocomplete';
 
+  let bhlGoalies = [];
   
 // Define the columns for the player table
     const columns = [
@@ -57,7 +58,6 @@ const newGameScehma = z.object({
     leagueId: z.number(),
     isPlayoffs: z.boolean(),
     homeTeamGoalie1: z.object({
-      username: z.string(),
       saves: z.number(),
       shotsAgainst: z.number(),
     }),
@@ -103,7 +103,7 @@ const newGameScehma = z.object({
   });
 
   // Create a new superform for the new team form
-  const {form:teamform,erors: teamerrors,enhance: teamenhance} = superForm(data.newTeamForm, {
+  const {form:teamform,erors: teamErrors,enhance: teamenhance} = superForm(data.newTeamForm, {
     taintedMessage: "This field has been changed",
     validators: newTeamSchema,
      // Reset the form upon a successful result
@@ -140,33 +140,7 @@ const newGameScehma = z.object({
   }
 
   // Goalie select
-  let bhlGoalies = [];
   //select goalies in the data.goalies array that are in the BHL
-  $: {
-    bhlGoalies = data.goalies
-      ? data.goalies
-          .filter((goalie) => goalie.team.leagueId == 1)
-          .map((goalie) => ({ value: goalie.uuid, name: goalie.username }))
-      : [];
-  }
-  let namhlGoalies = [];
-  //select goalies in the data.goalies array that are in the NAMHL
-  $: {
-    namhlGoalies = data.goalies
-      ? data.goalies
-          .filter((goalie) => goalie.team.leagueId == 2)
-          .map((goalie) => ({ value: goalie.uuid, name: goalie.username }))
-      : [];
-  }
-  let jbhlGoalies = [];
-  //select goalies in the data.goalies array that are in the JBHL
-  $: {
-    jbhlGoalies = data.goalies
-      ? data.goalies
-          .filter((goalie) => goalie.team.leagueId == 3)
-          .map((goalie) => ({ value: goalie.uuid, name: goalie.username }))
-      : [];
-  }
 
   // Contract select
   let contractType;
@@ -189,13 +163,7 @@ const newGameScehma = z.object({
     { value:3, name: "JBHL" },
   ];
   let gameLeague;
-  let homeTeamGoalie1;
-  let homeTeamGoalie2;
-  let homeTeamGoalie3;
 
-  let awayTeamGoalie1;
-  let awayTeamGoalie2;
-  let awayTeamGoalie3;
   let playerLeague = "1";
 
   // Initialize variables for showing and hiding certain form fields based on user input
@@ -223,12 +191,13 @@ const newGameScehma = z.object({
     console.log(id, field, value);
   }
 
+
 </script>
 
 <div class="container mx-auto mt-4 text-white">
 
   <SuperDebug data={$form} bind:errors={$errors} />
-  <SuperDebug data={$teamform} bind:errors={$teamerrors} />
+  <SuperDebug data={$teamform} bind:errors={$teamErrors} />
   <SuperDebug data={$gameForm} bind:errors={$gameErrors} />
 
 
@@ -320,16 +289,12 @@ const newGameScehma = z.object({
       <div class="form-control w-full max-w-xs">
         <label class="label text-white" for="teamName">Team Name</label>
         <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="teamName" placeholder="Team Name" required bind:value={$teamform.name}/>
-        {#if $errors.name}
-          <small class="text-red-500">{$errors.name}</small>
-        {/if}
+        
       </div>
       <div class="form-control w-full max-w-xs">
         <label class="label text-white" for="teamID">Team Shorthand</label>
         <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="teamID" placeholder="Team Shorthand" required bind:value={$teamform.id}/>
-        {#if $errors.id}
-          <small class="text-red-500">{$errors.id}</small>
-        {/if}
+        
       </div>
       <div class="w-full max-w-xs">
         <label for="leagueId">Team League</label>
@@ -338,30 +303,22 @@ const newGameScehma = z.object({
             <option value={league.value}>{league.name}</option>
           {/each}
         </select>
-        {#if $errors.leagueId}
-                <small class="text-red-500">{$errors.leagueId}</small>
-          {/if}
+        
       </div>
       <div class="form-control w-full max-w-xs">
         <label class="label text-white" for="team_owner">Team Owner</label>
         <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="team_owner" placeholder="Team Owner" required bind:value={$teamform.team_owner}/>
-        {#if $errors.team_owner}
-          <small class="text-red-500">{$errors.team_owner}</small>
-        {/if}
+        
       </div>
       <div class="form-control w-full max-w-xs">
         <label class="label text-white" for="color">Team Color Code</label>
         <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="color" placeholder="#FFFFFF" required bind:value={$teamform.color}/>
-        {#if $errors.color}
-          <small class="text-red-500">{$errors.color}</small>
-        {/if}
+        
       </div>
       <div class="form-control w-full max-w-xs">
         <label class="label text-white" for="description">Team Page Description</label>
         <textarea  class="textarea textarea-accent w-full max-w-xs" type="text" name="description" placeholder="Description" required bind:value={$teamform.description}/>
-        {#if $errors.description}
-          <small class="text-red-500">{$errors.description}</small>
-        {/if}
+        
       </div>
       <button type="submit"  class="btn btn-primary my-4 w-full max-w-xs">Submit New Team</button>
     </form>
@@ -379,55 +336,53 @@ const newGameScehma = z.object({
           <option value={league.value}>{league.name}</option>
         {/each}
       </select>
-      {#if $errors.leagueId}
-              <small class="text-red-500">{$errors.leagueId}</small>
+      {#if $gameErrors.leagueId}
+              <small class="text-red-500">{$gameErrors.leagueId}</small>
         {/if}
     </div>
 
-    {#if $gameForm.leagueId == 1}
-      {bhlGoalies = bhlLeagueGoalies}
-    {:else if  $gameForm.leagueId == 2}
-      {bhlGoalies = namhlGoalies}
-    {:else if  $gameForm.leagueId == 3}
-      {bhlGoalies = jbhlGoalies}
-    {/if}
+    
 
     <div class="w-fullform-control">
       <label class="label text-white cursor-pointer" for="playoffs">
         <span class="label-text">Is this a playoff game?</span> 
         <input name="playoffs" type="checkbox" class="checkbox" bind:checked={$gameForm.isPlayoffs}/>
       </label>
-      {#if $errors.isPlayoffs}
-        <small class="text-red-500">{$errors.isPlayoffs}</small>
+      {#if $gameErrors.isPlayoffs}
+        <small class="text-red-500">{$gameErrors.isPlayoffs}</small>
       {/if}
     </div>
     <div class="form-control w-full ">
       <label class="label text-white" for="tellraw">Tell Raw Output</label>
       <textarea  class="textarea textarea-accent w-full" type="text" name="tellraw" placeholder="Tell Raw" required bind:value={$gameForm.gameTellRaw}/>
-      {#if $errors.gameTellRaw}
-        <small class="text-red-500">{$errors.gameTellRaw}</small>
+      {#if $gameErrors.gameTellRaw}
+        <small class="text-red-500">{$gameErrors.gameTellRaw}</small>
       {/if}
     </div>
     <div class="form-control w-full gap-3">
       <label class="label text-white" for="homeTeamGoalie1">Home Team Goalie 1</label>
+        
       <AutoComplete
         class="input input-bordered input-accent w-full"
-        items={bhlGoalies.map((goalie) => goalie.name)}
+        items={data.goalies.filter((goalie) => goalie.team.leagueId === $gameForm.leagueId).map((goalie) => goalie.username)}
         bind:value={$gameForm.homeTeamGoalie1.username}
-        placeholder="Home Team Goalie 1"></AutoComplete>
-      {#if $errors.homeTeamGoalie1}
-        <small class="text-red-500">{$errors.homeTeamGoalie1}</small>
-      {/if}
+        placeholder="Home Team Goalie 1"
+        required
+      ></AutoComplete>
+      {#if $gameErrors.homeTeamGoalie1username}
+          <small class="text-red-500">{$gameErrors.homeTeamGoalie1username}</small>
+        {/if}
       <div class="flex flex-row gap-3">
           <label class="label text-white" for="homeTeamGoalie1saves">Home Team Goalie 1 Saves</label>
           <input class="input input-bordered input-accent max-w-xs" type="number" name="homeTeamGoalie1saves" placeholder="Saves" required bind:value={$gameForm.homeTeamGoalie1.saves}/>
-          {#if $errors.homeTeamGoalie1saves}
-            <small class="text-red-500">{$errors.homeTeamGoalie1saves}</small>
+          {#if $gameErrors.homeTeamGoalie1saves}
+          
+            <small class="text-red-500">{$gameErrors.homeTeamGoalie1saves}</small>
           {/if}
           <label class="label text-white" for="homeTeamGoalie1shotsAgainst">Home Team Goalie 1 Shots Against</label>
           <input class="input input-bordered input-accent max-w-xs" type="number" name="homeTeamGoalie1shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.homeTeamGoalie1.shotsAgainst}/>
-          {#if $errors.homeTeamGoalie1shotsAgainst}
-            <small class="text-red-500">{$errors.homeTeamGoalie1shotsAgainst}</small>
+          {#if $gameErrors.homeTeamGoalie1shotsAgainst}
+            <small class="text-red-500">{$gameErrors.homeTeamGoalie1shotsAgainst}</small>
           {/if}
         </div>
     </div>
@@ -441,22 +396,24 @@ const newGameScehma = z.object({
       <label class="label text-white" for="homeTeamGoalie2">Home Team Goalie 2</label>
       <AutoComplete
         class="input input-bordered input-accent w-full"
-        items={bhlGoalies.map((goalie) => goalie.name)}
+        items={data.goalies.filter((goalie) => goalie.team.leagueId === $gameForm.leagueId).map((goalie) => goalie.username)}
         bind:value={$gameForm.homeTeamGoalie2.username}
-        placeholder="Home Team Goalie 2"></AutoComplete>
-      {#if $errors.homeTeamGoalie2}
-        <small class="text-red-500">{$errors.homeTeamGoalie2}</small>
+        placeholder="Home Team Goalie 2"
+        ></AutoComplete>
+      {#if $gameErrors.homeTeamGoalie2username}
+        <small class="text-red-500">{$gameErrors.homeTeamGoalie2username}</small>
       {/if}
+      
       <div class="flex flex-row gap-3">
           <label class="label text-white" for="homeTeamGoalie2saves">Home Team Goalie 2 Saves</label>
           <input class="input input-bordered input-accent max-w-xs" type="number" name="homeTeamGoalie2saves" placeholder="Saves" required bind:value={$gameForm.homeTeamGoalie2.saves}/>
-          {#if $errors.homeTeamGoalie2saves}
-            <small class="text-red-500">{$errors.homeTeamGoalie2saves}</small>
+          {#if $gameErrors.homeTeamGoalie2saves}
+            <small class="text-red-500">{$gameErrors.homeTeamGoalie2saves}</small>
           {/if}
           <label class="label text-white" for="homeTeamGoalie2shotsAgainst">Home Team Goalie 2 Shots Against</label>
           <input class="input input-bordered input-accent max-w-xs" type="number" name="homeTeamGoalie2shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.homeTeamGoalie2.shotsAgainst}/>
-          {#if $errors.homeTeamGoalie2shotsAgainst}
-            <small class="text-red-500">{$errors.homeTeamGoalie2shotsAgainst}</small>
+          {#if $gameErrors.homeTeamGoalie2shotsAgainst}
+            <small class="text-red-500">{$gameErrors.homeTeamGoalie2shotsAgainst}</small>
           {/if}
         </div>
     </div>
@@ -467,105 +424,106 @@ const newGameScehma = z.object({
       <label class="label text-white" for="homeTeamGoalie3">Home Team Goalie 3</label>
       <AutoComplete
         class="input input-bordered input-accent w-full"
-        items={bhlGoalies.map((goalie) => goalie.name)}
+        items={data.goalies.filter((goalie) => goalie.team.leagueId === $gameForm.leagueId).map((goalie) => goalie.username)}
         bind:value={$gameForm.homeTeamGoalie3.username}
         placeholder="Home Team Goalie 3"></AutoComplete>
-      {#if $errors.homeTeamGoalie3}
-        <small class="text-red-500">{$errors.homeTeamGoalie3}</small>
+      {#if $gameErrors.homeTeamGoalie3username}
+        <small class="text-red-500">{$gameErrors.homeTeamGoalie3username}</small>
       {/if}
       <div class="flex flex-row gap-3">
           <label class="label text-white" for="homeTeamGoalie3saves">Home Team Goalie 3 Saves</label>
           <input class="input input-bordered input-accent max-w-xs" type="number" name="homeTeamGoalie3saves" placeholder="Saves" required bind:value={$gameForm.homeTeamGoalie3.saves}/>
-          {#if $errors.homeTeamGoalie3saves}
-            <small class="text-red-500">{$errors.homeTeamGoalie3saves}</small>
+          {#if $gameErrors.homeTeamGoalie3saves}
+                      <small class="text-red-500">{$gameErrors.homeTeamGoalie3saves}</small>
+                    {/if}
+                    <label class="label text-white" for="homeTeamGoalie3shotsAgainst">Home Team Goalie 3 Shots Against</label>
+                    <input class="input input-bordered input-accent max-w-xs" type="number" name="homeTeamGoalie3shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.homeTeamGoalie3.shotsAgainst}/>
+                    {#if $gameErrors.homeTeamGoalie3shotsAgainst}
+                      <small class="text-red-500">{$gameErrors.homeTeamGoalie3shotsAgainst}</small>
+                    {/if}
+                  </div>
+              </div>
           {/if}
-          <label class="label text-white" for="homeTeamGoalie3shotsAgainst">Home Team Goalie 3 Shots Against</label>
-          <input class="input input-bordered input-accent max-w-xs" type="number" name="homeTeamGoalie3shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.homeTeamGoalie3.shotsAgainst}/>
-          {#if $errors.homeTeamGoalie3shotsAgainst}
-            <small class="text-red-500">{$errors.homeTeamGoalie3shotsAgainst}</small>
-          {/if}
-        </div>
-    </div>
-{/if}
-    <div class="form-control w-full gap-3">
-      <label class="label text-white" for="awayTeamGoalie1">Away Team Goalie 1</label>
-      <AutoComplete
-        class="input input-bordered input-accent w-full"
-        items={bhlGoalies.map((goalie) => goalie.name)}
-        bind:value={$gameForm.awayTeamGoalie1.username}
-        placeholder="Away Team Goalie 1"></AutoComplete>
-      {#if $errors.awayTeamGoalie1}
-        <small class="text-red-500">{$errors.awayTeamGoalie1}</small>
-      {/if}
-      <div class="flex flex-row gap-3">
-          <label class="label text-white" for="awayTeamGoalie1saves">Away Team Goalie 1 Saves</label>
-          <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie1saves" placeholder="Saves" required bind:value={$gameForm.awayTeamGoalie1.saves}/>
-          {#if $errors.awayTeamGoalie1saves}
-            <small class="text-red-500">{$errors.awayTeamGoalie1saves}</small>
-          {/if}
-          <label class="label text-white" for="awayTeamGoalie1shotsAgainst">Away Team Goalie 1 Shots Against</label>
-          <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie1shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.awayTeamGoalie1.shotsAgainst}/>
-          {#if $errors.awayTeamGoalie1shotsAgainst}
-            <small class="text-red-500">{$errors.awayTeamGoalie1shotsAgainst}</small>
-          {/if}
-        </div>
-    </div>
-<button on:click={awayGoalie2} type="button" class="btn btn-primary">Show Away Goalie 2</button>
-    <button on:click={awayGoalie3} type="button" class="btn btn-primary">Show Away Goalie 3</button>
+              <div class="form-control w-full gap-3">
+                <label class="label text-white" for="awayTeamGoalie1">Away Team Goalie 1</label>
+                <AutoComplete
+                  class="input input-bordered input-accent w-full"
+                  items={data.goalies.filter((goalie) => goalie.team.leagueId === $gameForm.leagueId).map((goalie) => goalie.username)}
+                  bind:value={$gameForm.awayTeamGoalie1.username}
+                  placeholder="Away Team Goalie 1"
+                  required
+                  ></AutoComplete>
+                {#if $gameErrors.awayTeamGoalie1username}
+                  <small class="text-red-500">{$gameErrors.awayTeamGoalie1username}</small>
+                {/if}
+                <div class="flex flex-row gap-3">
+                    <label class="label text-white" for="awayTeamGoalie1saves">Away Team Goalie 1 Saves</label>
+                    <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie1saves" placeholder="Saves" required bind:value={$gameForm.awayTeamGoalie1.saves}/>
+                    {#if $gameErrors.awayTeamGoalie1saves}
+                      <small class="text-red-500">{$gameErrors.awayTeamGoalie1saves}</small>
+                    {/if}
+                    <label class="label text-white" for="awayTeamGoalie1shotsAgainst">Away Team Goalie 1 Shots Against</label>
+                    <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie1shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.awayTeamGoalie1.shotsAgainst}/>
+                    {#if $gameErrors.awayTeamGoalie1shotsAgainst}
+                      <small class="text-red-500">{$gameErrors.awayTeamGoalie1shotsAgainst}</small>
+                    {/if}
+                  </div>
+              </div>
+          <button on:click={awayGoalie2} type="button" class="btn btn-primary">Show Away Goalie 2</button>
+              <button on:click={awayGoalie3} type="button" class="btn btn-primary">Show Away Goalie 3</button>
 
-{#if awaygoalie2visible}
-    <div class="form-control w-full gap-3">
-      <label class="label text-white" for="awayTeamGoalie2">Away Team Goalie 2</label>
-      <AutoComplete
-        class="input input-bordered input-accent w-full"
-        items={bhlGoalies.map((goalie) => goalie.name)}
-        bind:value={$gameForm.awayTeamGoalie2.username}
-        placeholder="Away Team Goalie 2"></AutoComplete>
-      {#if $errors.awayTeamGoalie2}
-        <small class="text-red-500">{$errors.awayTeamGoalie2}</small>
-      {/if}
-      <div class="flex flex-row gap-3">
-          <label class="label text-white" for="awayTeamGoalie2saves">Away Team Goalie 2 Saves</label>
-          <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie2saves" placeholder="Saves" required bind:value={$gameForm.awayTeamGoalie2.saves}/>
-          {#if $errors.awayTeamGoalie2saves}
-            <small class="text-red-500">{$errors.awayTeamGoalie2saves}</small>
+          {#if awaygoalie2visible}
+              <div class="form-control w-full gap-3">
+                <label class="label text-white" for="awayTeamGoalie2">Away Team Goalie 2</label>
+                <AutoComplete
+                  class="input input-bordered input-accent w-full"
+                  items={data.goalies.filter((goalie) => goalie.team.leagueId === $gameForm.leagueId).map((goalie) => goalie.username)}
+                  bind:value={$gameForm.awayTeamGoalie2.username}
+                  placeholder="Away Team Goalie 2"></AutoComplete>
+                {#if $gameErrors.awayTeamGoalie2username}
+                  <small class="text-red-500">{$gameErrors.awayTeamGoalie2username}</small>
+                {/if}
+                <div class="flex flex-row gap-3">
+                    <label class="label text-white" for="awayTeamGoalie2saves">Away Team Goalie 2 Saves</label>
+                    <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie2saves" placeholder="Saves" required bind:value={$gameForm.awayTeamGoalie2.saves}/>
+                    {#if $gameErrors.awayTeamGoalie2saves}
+                      <small class="text-red-500">{$gameErrors.awayTeamGoalie2saves}</small>
+                    {/if}
+                    <label class="label text-white" for="awayTeamGoalie2shotsAgainst">Away Team Goalie 2 Shots Against</label>
+                    <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie2shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.awayTeamGoalie2.shotsAgainst}/>
+                    {#if $gameErrors.awayTeamGoalie2shotsAgainst}
+                      <small class="text-red-500">{$gameErrors.awayTeamGoalie2shotsAgainst}</small>
+                    {/if}
+                  </div>
+              </div>
           {/if}
-          <label class="label text-white" for="awayTeamGoalie2shotsAgainst">Away Team Goalie 2 Shots Against</label>
-          <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie2shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.awayTeamGoalie2.shotsAgainst}/>
-          {#if $errors.awayTeamGoalie2shotsAgainst}
-            <small class="text-red-500">{$errors.awayTeamGoalie2shotsAgainst}</small>
-          {/if}
-        </div>
-    </div>
-{/if}
 
-{#if awaygoalie3visible}
+          {#if awaygoalie3visible}
 
-    <div class="form-control w-full gap-3">
-      <label class="label text-white" for="awayTeamGoalie3">Away Team Goalie 3</label>
-      <AutoComplete
-        class="input input-bordered input-accent w-full"
-        items={bhlGoalies.map((goalie) => goalie.name)}
-        bind:value={$gameForm.awayTeamGoalie3.username}
-        placeholder="Away Team Goalie 3"></AutoComplete>
-      {#if $errors.awayTeamGoalie3}
-        <small class="text-red-500">{$errors.awayTeamGoalie3}</small>
-      {/if}
-      <div class="flex flex-row gap-3">
-          <label class="label text-white" for="awayTeamGoalie3saves">Away Team Goalie 3 Saves</label>
-          <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie3saves" placeholder="Saves" required bind:value={$gameForm.awayTeamGoalie3.saves}/>
-          {#if $errors.awayTeamGoalie3saves}
-            <small class="text-red-500">{$errors.awayTeamGoalie3saves}</small>
+              <div class="form-control w-full gap-3">
+                <label class="label text-white" for="awayTeamGoalie3">Away Team Goalie 3</label>
+                <AutoComplete
+                  class="input input-bordered input-accent w-full"
+                  items={data.goalies.filter((goalie) => goalie.team.leagueId === $gameForm.leagueId).map((goalie) => goalie.username)}
+                  bind:value={$gameForm.awayTeamGoalie3.username}
+                  placeholder="Away Team Goalie 3"></AutoComplete>
+                {#if $gameErrors.awayTeamGoalie3username}
+                  <small class="text-red-500">{$gameErrors.awayTeamGoalie3username}</small>
+                {/if}
+                <div class="flex flex-row gap-3">
+                    <label class="label text-white" for="awayTeamGoalie3saves">Away Team Goalie 3 Saves</label>
+                    <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie3saves" placeholder="Saves" required bind:value={$gameForm.awayTeamGoalie3.saves}/>
+                    {#if $gameErrors.awayTeamGoalie3saves}
+                      <small class="text-red-500">{$gameErrors.awayTeamGoalie3saves}</small>
+                    {/if}
+                    <label class="label text-white" for="awayTeamGoalie3shotsAgainst">Away Team Goalie 3 Shots Against</label>
+                    <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie3shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.awayTeamGoalie3.shotsAgainst}/>
+                    {#if $gameErrors.awayTeamGoalie3shotsAgainst}
+                      <small class="text-red-500">{$gameErrors.awayTeamGoalie3shotsAgainst}</small>
+                    {/if}
+                  </div>
+              </div>
           {/if}
-          <label class="label text-white" for="awayTeamGoalie3shotsAgainst">Away Team Goalie 3 Shots Against</label>
-          <input class="input input-bordered input-accent max-w-xs" type="number" name="awayTeamGoalie3shotsAgainst" placeholder="Shots Against" required bind:value={$gameForm.awayTeamGoalie3.shotsAgainst}/>
-          {#if $errors.awayTeamGoalie3shotsAgainst}
-            <small class="text-red-500">{$errors.awayTeamGoalie3shotsAgainst}</small>
-          {/if}
-        </div>
-    </div>
-{/if}
-
 
     <button type="submit"  class="btn btn-primary my-4 w-full max-w-xs">Submit New Game</button>
 

@@ -99,6 +99,3 @@ export const _processHockeyStats = (input) => {
         matchInf
     };
 };
-export const _goalieStats = (input) => {
-    
-};
