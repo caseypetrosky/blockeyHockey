@@ -1,9 +1,7 @@
-// src/hooks.server.ts
 import { auth } from "$lib/server/lucia";
-import { sequence } from "@sveltejs/kit/hooks";
 
-export const customHandle = async ({ resolve, event }) => {
-    return resolve(event);
-}
-
-export const handle =  sequence(customHandle, auth) 
+export const handle= async ({ event, resolve }) => {
+	// we can pass `event` because we used the SvelteKit middleware
+	event.locals.auth = auth.handleRequest(event);
+	return await resolve(event);
+};
