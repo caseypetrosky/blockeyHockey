@@ -101,6 +101,7 @@ $: sort = (column) => {
 						<th class="hover:cursor-pointer" on:click={() => sort("goalieStats.gp")}>Games Played</th>
 						<th class="hover:cursor-pointer" on:click={() => sort("goalieStats.shots")}>Shots</th>
 						<th class="hover:cursor-pointer" on:click={() => sort("goalieStats.saves")}>Saves</th>
+						<th class="hover:cursor-pointer" on:click={() => sort("goalieStats.goals_allowed")}>Goals Against</th>
 						<th class="hover:cursor-pointer" on:click={() => sort("goalieStats.savepercentage")}>Save %</th>
 						<th class="hover:cursor-pointer" on:click={() => sort("goalieStats.gaa")}>GAA</th>
 						<th class="hover:cursor-pointer" on:click={() => sort("goalieStats.toi")}>Time On Ice</th>
@@ -117,6 +118,7 @@ $: sort = (column) => {
 						<td>{row.goalieStats.gp}</td>
 						<td>{row.goalieStats.shots}</td>
 						<td>{row.goalieStats.saves}</td>
+						<td>{row.goalieStats.goals_allowed}</td>
 						<td>{row.goalieStats.savepercentage}%</td>
 						<td>{row.goalieStats.gaa}</td>
 						<td>{row.goalieStats.toi}</td>
