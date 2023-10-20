@@ -1,17 +1,18 @@
-<script>
-    export let form;
-    console.log(form);
+<!-- routes/signup/+page.svelte -->
+<script lang="ts">
+import { enhance } from '$app/forms';
+import { z } from "zod";
+import { superForm } from "sveltekit-superforms/client";
+import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 </script>
 
-<div class="container mx-auto">
-    <h1 class="text-xl">Login</h1> 
-    {#if form?.message}
-        <p class="text-red-500">{form.message}</p>
-     {/if}
-    
-    <form method="POST" class="mt-4">
-        <input type="text" name="username" placeholder="Username"  class="input input-bordered input-primary w-full max-w-xs">
-        <input type="password"name="password" placeholder="password" class="input input-bordered input-primary w-full max-w-xs"><br>
-        <button type="submit" class="btn btn-outline btn-primary btn-wide mt-3">Login</button>
-    </form>
-</div>
+<h1>Sign up</h1>
+
+<form method="post" use:enhance>
+	<label for="username">Username</label>
+	<input name="username" id="username" /><br />
+	<label for="password">Password</label>
+	<input type="password" name="password" id="password" /><br />
+	<input type="submit" />
+</form>
+<a href="admin/login">Sign in</a>

@@ -24,7 +24,10 @@ else{
     savepercentage = saves / shots;
     gaa = goals / gamesPlayed;
 let points = goals + assists;
-let ppg = points / gamesPlayed;
+let ppg = points / gamesPlayed ;
+ppg = ppg.toFixed(2);
+savepercentage = savepercentage.toFixed(3);
+gaa = gaa.toFixed(2);
 </script>
 
 <div class="m-2">

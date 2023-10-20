@@ -1,5 +1,6 @@
 <script>
 	import { page } from '$app/stores';
+  import { onMount } from 'svelte';
   export let data;
   //determine how many wins loses and ot loses a team has and make a dictionary of each team and these Stats
   //then sort the dictionary by points and display the standings
@@ -59,7 +60,39 @@
     });
   }
   
+$: array = [...teamStats];
+  
+  let sortBy = {col:"gp", ascending: false};
+  
+  $: sort = (column) => {
+     
+      if (sortBy.col === column) {
+        sortBy.ascending = !sortBy.ascending;
+      } else {
+        sortBy.col = column;
+        sortBy.ascending = true;
+      }
+  
+      let sortModifier = sortBy.ascending ? 1 : -1;
+  
+      let sort = (a, b) => {
+        const aValue = column.includes('.') ? column.split('.').reduce((obj, key) => obj[key], a) : a[column];
+        const bValue = column.includes('.') ? column.split('.').reduce((obj, key) => obj[key], b) : b[column];
+  
+        return aValue < bValue ? -1 * sortModifier : aValue > bValue ? 1 * sortModifier : 0;
+      };
+      
+      array = array.slice().sort(sort);
+     
+  
+    };
+    onMount(() => {
+      sort("points");
+      sort("points");
+  
+    });
 </script>
+
 
 <div class="container py-4 mx-auto text-white tabs">
   <a href="/leagues/jbhl" class="tab tab-bordered text-2xl"
@@ -78,28 +111,29 @@
 </div>
 <!--A  standings table team with wins loses overtime loses points goal difference goals for goals against that can be sorted by each colunn with poionts sorted first-->
 <div class="container mx-auto mt-10">
-  <table class="table w-full text-white">
+  <table class="table w-full text-white table-">
     <thead class="text-white">
       <tr>
+        <th>Rank</th>
         <th class="text-xl">Team</th>
-        <th class="text-xl">GP</th>
-        <th class="text-xl">Wins</th>
-        <th class="text-xl">Losses</th>
-        <th class="text-xl">OT Losses</th>
-        <th class="text-xl text-yellow-400">Points</th>
-        <th class="text-xl">GD</th>
-        <th class="text-xl">GF</th>
-        <th class="text-xl">GA</th>
-        <td class="text-xl">GFA</td>
-        <td class="text-xl">GAA</td>
-
+        <th class="text-xl hover:cursor-pointer" on:click={() => sort( 'gamesPlayed')}>GP</th>
+        <th class="text-xl hover:cursor-pointer" on:click={() => sort('wins')}>Wins</th>
+        <th class="text-xl hover:cursor-pointer" on:click={() => sort('losses')}>Losses</th>
+        <th class="text-xl hover:cursor-pointer" on:click={() => sort('otLosses')}>OT Losses</th>
+        <th class="text-xl text-yellow-400 hover:cursor-pointer" on:click={() => sort('points')}>Points</th>
+        <th class="text-xl hover:cursor-pointer" on:click={() => sort('goalDifference')}>GD</th>
+        <th class="text-xl hover:cursor-pointer" on:click={() => sort('goalsFor')}>GF</th>
+        <th class="text-xl hover:cursor-pointer" on:click={() => sort('goalsAgainst')}>GA</th>
+        <td class="text-xl hover:cursor-pointer" on:click={() => sort('gfa')}>GFA</td>
+        <td class="text-xl hover:cursor-pointer" on:click={() => sort('gaa')}>GAA</td>
       </tr>
     </thead>
     <tbody>
-      {#each teamStats as team}
-        <tr >
-          <td class="text-2xl flex gap-2" style="background-color: {team.color}; background-opacity:50" >
-           <a href="/teams/{team.id}">{team.name}</a>
+      {#each array as team, i}
+        <tr>
+					<td>{i +1}</td>
+          <td class="text-2xl flex gap-2" style="background-color: {team.color}; background-opacity:50">
+            <a href="/teams/{team.id}">{team.name}</a>
             <img src="/src/static/logos/{team.id}.png" class="h-12 w-12 object-contain" alt="Team Logo" />
           </td>
           <td class="text-xl">{team.gamesPlayed}</td>

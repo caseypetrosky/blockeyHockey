@@ -299,9 +299,6 @@ export const actions = {
             player.playerId = await getPlayerId(player.playerUUID);
         }
 
-       
-            
-
 
          matchInf = {
             awayTeam: awayTeamReturn.team,
@@ -349,9 +346,6 @@ export const actions = {
         if(gameform.data.awayTeamGoalie3.username != ''){
             goalieData.push(gameform.data.awayTeamGoalie3);
         }
-        const goalieStats = [];
-
-        
 
         let playerData = [];
         for (const player of homeTeamReturn.players) {
@@ -361,9 +355,6 @@ export const actions = {
         for (const player of awayTeamReturn.players) {
             playerData.push(player);
         }
-
-
-        const playerStats = [];
 
         for(const goalie of goalieData){
             const goalieUUID = await getUUID(goalie.username);

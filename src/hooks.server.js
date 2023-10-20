@@ -1,18 +1,9 @@
-import { redirect } from '@sveltejs/kit';
-const protectedroutes = ['/admin/panel'];
-export const handle = async ({ event, request, resolve }) => {
-    const access = event.cookies.get('access');
-    if (!access && protectedroutes.includes(event.url.pathname)) {
-        throw redirect(303, '/');
-    }
-    if (access) {
-        event.locals.user = {
-            isAuthenticated: true
-        };
-    } else {
-        if (protectedroutes.includes(event.url.pathname)) {
-            throw redirect(303, '/');
-        }
-    }
+// src/hooks.server.ts
+import { auth } from "$lib/server/lucia";
+import { sequence } from "@sveltejs/kit/hooks";
+
+export const customHandle = async ({ resolve, event }) => {
     return resolve(event);
-};
+}
+
+export const handle =  sequence(customHandle, auth) 
