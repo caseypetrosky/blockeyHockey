@@ -94,17 +94,14 @@ const newGameScehma = z.object({
 
 // Create a new superform for the new player form
   const {form, errors, enhance} = superForm(data.newPlayerForm, {
-    taintedMessage: "This field has been changed",
     validators: newPlayerSchema,
      // Reset the form upon a successful result
     resetForm: true,
     multipleSubmits: 'prevent',
-
   });
 
   // Create a new superform for the new team form
   const {form:teamform,erors: teamErrors,enhance: teamenhance} = superForm(data.newTeamForm, {
-    taintedMessage: "This field has been changed",
     validators: newTeamSchema,
      // Reset the form upon a successful result
     resetForm: true,
@@ -114,7 +111,6 @@ const newGameScehma = z.object({
   // Create a new superform for the new game form
   const{form:gameForm, errors:gameErrors, enhance:gameEnhance} = superForm(data.newGameForm, {
     dataType: 'json',
-    taintedMessage: "This field has been changed",
     validators: newGameScehma,
     resetForm: true,
     multipleSubmits: 'prevent',

@@ -130,7 +130,8 @@
 <footer class="footer b-0 footer-center bg-base-100 text-base-content hidden p-4 lg:block">
 	<div>
 		<p>Copyright &#xa9; 2023 - All right reserved by Blockey Hockey LLC</p>
-		<a href="/admin" class="hover:text-accent-focus ">Admin Login</a>
+		<a href="/admin" class="hover:text-accent-focus ">Login</a>
+		<a href="/admin/panel" class="hover:text-accent-focus ">Admin Panel</a>
 		<p>Coded by Caspet</p>
 	</div>
 </footer>

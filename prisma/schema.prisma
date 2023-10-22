@@ -12,6 +12,7 @@ model User {
   username     String    @unique
   auth_session Session[]
   key          Key[]
+  role         String    @default("user")
 }
 
 model Session {

@@ -2,7 +2,8 @@ import prisma from '$lib/prisma';
 import { superValidate } from 'sveltekit-superforms/server';
 import { fail } from '@sveltejs/kit';
 import { boolean, date, z } from 'zod';
-
+import { auth } from "$lib/server/lucia";
+import { error } from '@sveltejs/kit'
 //CHANGE THIS EACH SEASON!!!!!!
 let defaultBHLSeason = "BHLS19";
 let defaultNAMHLSeason = "NAMHLS8";
@@ -64,7 +65,16 @@ const newGameScehma = z.object({
 })
 
 
-export const load = async (event) => {
+export const load = async ({event, locals,}) => {
+    const session = await locals.auth.validate()
+    const userId = session.user.userId;
+    const user = await auth.getUser(userId);
+    
+    if(!user || !session || user.role != 'admin'){
+        throw error(401, "You do not have the required permissions to view this content.");
+        
+    }else{
+
         const newPlayerForm = await superValidate(event, newPlayerSchema);
         const newTeamForm = await superValidate(event, newTeamSchema);
         const newGameForm = await superValidate(event, newGameScehma);
@@ -96,7 +106,7 @@ export const load = async (event) => {
             newTeamForm,
             newGameForm,
         }
-}
+}}
 const getUUID = async (username) => {
     try {
         const response = await fetch(`https://playerdb.co/api/player/minecraft/${username}`);
