@@ -1,6 +1,8 @@
 <script>
   import { Search, Button } from 'flowbite-svelte'
   import { goto } from '$app/navigation';
+	
+  export let data;
 
 let search = '';
 
@@ -28,6 +30,7 @@ search = '';
     <a href="/stats/leaderboard" class="tab tab-bordered text-2xl ">All time leaderboards</a> 
   </div>
 <form class="flex gap-2 " on:submit={handleSubmit}>
+  
   <Search bind:value={search} size='lg' class="flex gap-2 items-center" placeholder="Search for player by username or uuid">
   </Search>
   <Button size='sm' class="bg-primary hover:bg-primary-focus">

@@ -2,6 +2,7 @@
 	import '../app.postcss';
     let myImage = '/src/static/bhl.png';
 	import { goto } from '$app/navigation';
+	export let data;
 	
     let search = '';
 
@@ -130,7 +131,17 @@
 <footer class="footer b-0 footer-center bg-base-100 text-base-content hidden p-4 lg:block">
 	<div>
 		<p>Copyright &#xa9; 2023 - All right reserved by Blockey Hockey LLC</p>
-		<a href="/admin" class="hover:text-accent-focus ">Login</a>
+		<form method="POST">
+			
+			{#if !data.user}
+				<li><a href="/admin">Register</a></li>
+				<li><a href="/admin/login" role="button">Login</a></li>
+			{:else}
+				<li>
+					<button formaction="/logout" type="submit" >Logout</button>
+				</li>
+			{/if}
+		</form>
 		<a href="/admin/panel" class="hover:text-accent-focus ">Admin Panel</a>
 		<p>Coded by Caspet</p>
 	</div>

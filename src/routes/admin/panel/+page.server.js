@@ -469,39 +469,23 @@ export const actions = {
         console.error("An error occurred:", error);
         return null;
     }
-}}
+    },
+   updatePlayer: async (event) => {
+    try {
+        const player = req.body; // get the updated player data from the request body
+        // update the player in the database
+        await someDatabaseModule.updatePlayer(player); // use your actual database module's method
 
-
-
-/*
-        for (const goalie of goalieData) {
-            const goalieStat = await prisma.game_goalie_stats.create({
-              data: {
-                playerUUID: goalie.playerUUID, // Assuming you have the player's ID from your data
-                shots: goalie.shots, // Assuming these properties exist in goalieData
-                saves: goalie.saves,
-                goals: goalie.goalsAllowed,
-                time_on_ice: goalie.timeOnIce,
-                shutout: goalie.shutout,
-                game: {
-                  connect: {
-                    id: game.id, // Use the ID of the game you just created
-                  },
-                },
-              },
-            });
-            goalieStats.push(goalieStat);
-        };
-        for (const player of playerData) {
-            const playerStat = await prisma.game_player_stats.create({
-                data: {
-                playerId: player.playerId, // You should get the player's ID from your data
-                goals_scored: player.goalsScored, // Assuming these properties exist in playerData
-                assists: player.assists,
-                touches: player.touches,
-                time_on_ice: player.timeOnIce,
-                },
-            });
-    
-            playerStats.push(playerStat);
-        }*/
+        res.writeHead(200, {
+            'Content-Type': 'application/json'
+        });
+        res.end(JSON.stringify({ status: 'success', message: 'Player updated' }));
+    } catch (error) {
+        console.error('An error occurred:', error);
+        res.writeHead(500, {
+            'Content-Type': 'application/json'
+        });
+        res.end(JSON.stringify({ status: 'error', message: 'Internal server error' }));
+    }
+}
+}

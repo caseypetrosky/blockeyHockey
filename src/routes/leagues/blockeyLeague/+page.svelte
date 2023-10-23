@@ -5,32 +5,41 @@
   <a href="/leagues/blockeyLeague/standings" class="tab tab-bordered text-2xl">Standings</a>
   <a href="/leagues/blockeyLeague/bhlstats" class="tab tab-bordered text-2xl">Stats Leaderboard</a>
 </div>
-  <header class="text-white">
-    <div class="container mx-auto px-4">
-      <h1 class="text-4xl font-bold">Blockey Hockey League</h1>
-      <p class="text-lg mt-2">The highest tier of Blockey Hockey</p>
-    </div>
-    
-  </header>
+<div class="container mx-auto px-4 py-8">
+  <section class="text-white">
+    <div class="hero bg-cover bg-center h-96" style="background-image: url('path_to_your_image.jpg')">
+      <div class="flex items-center justify-center h-full w-full bg-opacity-50 bg-black">
+        <div class="text-center">
+          <h1 class="text-4xl font-bold">Blockey Hockey League</h1>
+          <p class="text-lg mt-2">The highest tier of Blockey Hockey</p>
+        </div>
+      </div>
+    </div>  </section>
+  </div>
 
   <div class="container mx-auto px-4">
     <section class="mt-8">
       <h2 class="text-2xl font-bold mb-4">About the League</h2>
-      <p class="text-lg">The Blockey Hockey League is a highly competitive league for blockey hockey teams from around the world. Founded in 2019, the league has been at the forefront of promoting and developing the gamemode.</p>
-      <p class="text-lg mt-2">With a rich history, the Blockey Hockey League showcases the best talent, intense rivalries, and thrilling matches that keep fans on the edge of their seats.</p>
+      <p class="text-lg">Dive into the intense competition of the Blockey Hockey League (BHL), the pinnacle of blockey hockey worldwide. Established in 2019, the BHL has grown into a global phenomenon, attracting the best players and teams from around the world.</p>
+      <p class="text-lg mt-2">From breathtaking goals to unforgettable championship games, the BHL boasts a rich history of thrilling gameplay, fierce rivalries, and a passionate community. Join us as we write the next chapter in the epic saga of blockey hockey!</p>
+
     </section>
+    
 
     <section class="mt-8">
       <h2 class="text-2xl font-bold mb-4">Teams</h2>
-      <p class="text-lg">The league consists of 10 teams divided into 2 Divisions competing for the championship title each season. Each team represents a different city or region and are owned by players.</p>
-      <p class="text-lg mt-2">Check out our teams page to learn more about the exciting roster of teams in the and a little bit about them.</p>
-      <a href="/teams" class="btn bg-primary m-2">View Teams</a> 
+      <p class="text-lg">Meet the heart and soul of the BHL: our teams! Comprising 10 fiercely competitive teams across 2 divisions, each team brings unique flair, strategy, and skill to the ice. From hometown heroes to rising stars, our league is a melting pot of talent from around the blockey world.</p>
+      <p class="text-lg mt-2">Dive deeper into each team's history, star players, and season highlights. Who will you root for in the race for the championship?</p>
+       <a href="/teams" class="btn bg-primary m-2">View Teams</a>
     </section>
+    
+
 
     <section class="mt-8">
       <h2 class="text-2xl font-bold mb-4">Schedule</h2>
       <p class="text-lg">Stay up to date with the latest matches and game schedules in the Blockey Hockey League. All scheduled games and reschedules can be found in the discord servers.</p>
     </section>
+
     <section class="mt-8">
       <h2 class="text-3xl font-bold">Previous Seasons</h2>
      

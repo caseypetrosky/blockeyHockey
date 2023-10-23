@@ -1,6 +1,7 @@
 <script>
   import { page } from "$app/stores";
   import { z } from "zod";
+  
   export let data;
   import {
     Button,
@@ -15,6 +16,7 @@
   import { superForm } from "sveltekit-superforms/client";
   import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   import AutoComplete from 'simple-svelte-autocomplete';
+
 
   let bhlGoalies = [];
   
@@ -95,24 +97,39 @@ const newGameScehma = z.object({
 // Create a new superform for the new player form
   const {form, errors, enhance} = superForm(data.newPlayerForm, {
     validators: newPlayerSchema,
-     // Reset the form upon a successful result
+      // Reset the form upon a successful result
     resetForm: true,
+    // On ActionResult error, render the nearest +error.svelte page
+    onError: 'apply',
+    // No message when navigating away from a modified form
+    taintedMessage: null,
     multipleSubmits: 'prevent',
+
   });
 
   // Create a new superform for the new team form
   const {form:teamform,erors: teamErrors,enhance: teamenhance} = superForm(data.newTeamForm, {
     validators: newTeamSchema,
-     // Reset the form upon a successful result
+      // Reset the form upon a successful result
     resetForm: true,
+    // On ActionResult error, render the nearest +error.svelte page
+    onError: 'apply',
+    // No message when navigating away from a modified form
+    taintedMessage: null,
     multipleSubmits: 'prevent',
+
   });
 
   // Create a new superform for the new game form
   const{form:gameForm, errors:gameErrors, enhance:gameEnhance} = superForm(data.newGameForm, {
     dataType: 'json',
     validators: newGameScehma,
-    resetForm: true,
+     // Reset the form upon a successful result
+     resetForm: true,
+    // On ActionResult error, render the nearest +error.svelte page
+    onError: 'apply',
+    // No message when navigating away from a modified form
+    taintedMessage: null,
     multipleSubmits: 'prevent',
   })
 
@@ -183,24 +200,23 @@ const newGameScehma = z.object({
   }
 
   //create an update player function for the table
-  async function updatePlayer(id, field, value) {
-    console.log(id, field, value);
-  }
 
+    // Client-side script
+    
+   
 
 </script>
 
 <div class="container mx-auto mt-4 text-white">
 
-  <SuperDebug data={$form} bind:errors={$errors} />
-  <SuperDebug data={$teamform} bind:errors={$teamErrors} />
-  <SuperDebug data={$gameForm} bind:errors={$gameErrors} />
-
-
-
-  <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
+<div class="flex gap-4">
+  <h1 class="text-3xl font-semibold text-gray-900 dark:text-white underline">
     Admin Panel
   </h1>
+  <a href="/admin/panel/playerUpdate" class="text-3xl font-semibold text-gray-900 dark:text-white">
+    Player editing table
+  </a>
+</div>
 
    <div class="grid grid-cols-2">
 
@@ -524,30 +540,6 @@ const newGameScehma = z.object({
     <button type="submit"  class="btn btn-primary my-4 w-full max-w-xs">Submit New Game</button>
 
    </form>
-  <div class="overflow-x-auto">
-   <table class="table  text-white">
-    <thead>
-      {#each columns as col}
-        <th class="text-white text-lg">{col.label}</th>
-      {/each}
-    </thead>
-    <tbody>
-      {#each data.players as player}
-        <tr class="hover">
-          <td >{player.username}</td>
-          <td contenteditable="true">{player.number}</td>
-          <td>{player.teamId}</td>
-          <td>{player.goalie}</td>
-          <td>{player.awards}</td>
-          <td>{player.league_roles}</td>
-          <td>{player.contractTier}</td>
-          <td>{player.contractLength}</td>
-          <td>{player.contractPrice}</td>
-        </tr>
-      {/each}
-    
-   </table>
-</div>
 
 
 

@@ -20,7 +20,7 @@ const {form, errors, enhance} = superForm(data.signupForm, {
   });
 
 </script>
-<SuperDebug data={$form} bind:errors={$errors} />
+
 <div class="flex gap-4">
 <h3 class="my-4 text-xl font-medium text-gray-900 dark:text-white underline">
 	Create A New Account

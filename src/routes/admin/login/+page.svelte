@@ -18,7 +18,7 @@
     });
   
   </script>
-  <SuperDebug data={$form} bind:errors={$errors} />
+ 
 
 
 <div class="flex gap-4">
