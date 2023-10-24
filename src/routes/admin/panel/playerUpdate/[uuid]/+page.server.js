@@ -17,10 +17,11 @@ const playerSchema = z.object({
     contractPrice: z.number().min(1500).max(15000),
 });
 
+let userId;
 
 export const load = async ({ params , locals,}) => {
     const session = await locals.auth.validate()
-    const userId = session.user.userId;
+    userId = session.user.userId;
     const user = await auth.getUser(userId);
     
     if(!user || !session || user.role != 'admin'){
@@ -55,6 +56,19 @@ export const actions = {
 
         const form = await superValidate(request, playerSchema);
         
+        await prisma.Logs.create({
+            data: {
+                type: "UpdatePlayer",
+                data: JSON.stringify(form),
+                user: {
+                    connect : {
+                        id: userId,
+                }},
+                
+                date: new Date(),
+
+            },
+            });
 
         if(!form.valid){
             return fail(400,{

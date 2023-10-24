@@ -13,6 +13,7 @@ model User {
   auth_session Session[]
   key          Key[]
   role         String    @default("user")
+  logs         Logs[]
 }
 
 model Session {
@@ -30,6 +31,17 @@ model Key {
   hashed_password String?
   user_id         String
   user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+}
+
+model Logs {
+  id      Int      @id @default(autoincrement())
+  user_id String
+  type    String
+  data    String
+  date    DateTime
+  user    User     @relation(references: [id], fields: [user_id], onDelete: Cascade)
 
   @@index([user_id])
 }

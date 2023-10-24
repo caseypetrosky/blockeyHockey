@@ -9,6 +9,11 @@ let defaultBHLSeason = "BHLS19";
 let defaultNAMHLSeason = "NAMHLS8";
 let defaultJBHLSeason = "JBHLS12";
 
+
+let session;
+let userId;
+let user; 
+
 const newPlayerSchema = z.object({
     username: z.string().min(3).max(16),
     number: z.number().min(0).max(99),
@@ -66,9 +71,9 @@ const newGameScehma = z.object({
 
 
 export const load = async ({event, locals,}) => {
-    const session = await locals.auth.validate()
-    const userId = session.user.userId;
-    const user = await auth.getUser(userId);
+     session = await locals.auth.validate()
+     userId = session.user.userId;
+     user = await auth.getUser(userId);
     
     if(!user || !session || user.role != 'admin'){
         throw error(401, "You do not have the required permissions to view this content.");
@@ -124,9 +129,21 @@ const getUUID = async (username) => {
 
 export const actions = {
     newPlayerForm: async (event) => {
-        console.log(event);
         const form = await superValidate(event, newPlayerSchema);
         
+        await prisma.Logs.create({
+            data: {
+                type: "newPlayer",
+                data: JSON.stringify(form),
+                user: {
+                    connect : {
+                        id: userId,
+                }},
+                
+                date: new Date(),
+
+            },
+            });
 
         if(!form.valid){
             return fail(400,{
@@ -147,6 +164,8 @@ export const actions = {
             data: {
                 username: form.data.username,
                 uuid: uuid,
+                awards: '',
+                league_roles: '',
                 number: form.data.number,
                 teamId: form.data.teamId,
                 goalie: form.data.goalie,
@@ -166,6 +185,20 @@ export const actions = {
     newTeamForm: async (event) => {
         const teamform = await superValidate(event, newTeamSchema);
        
+        await prisma.Logs.create({
+            data: {
+                type: "newTeam",
+                data: JSON.stringify(form),
+                user: {
+                    connect : {
+                        id: userId,
+                }},
+                
+                date: new Date(),
+
+            },
+            });
+
         if(!teamform.valid){
             return fail(400,{
                 teamform
@@ -195,6 +228,20 @@ export const actions = {
     newGameForm: async (event) => {
         
         const gameform = await superValidate(event, newGameScehma);
+
+        await prisma.Logs.create({
+            data: {
+                type: "newGame",
+                data: JSON.stringify(form),
+                user: {
+                    connect : {
+                        id: userId,
+                }},
+                
+                date: new Date(),
+
+            },
+            });
 
         if(!gameform.valid){
             return fail(400,{
@@ -471,22 +518,5 @@ export const actions = {
         return null;
     }
     },
-   updatePlayer: async (event) => {
-    try {
-        const player = req.body; // get the updated player data from the request body
-        // update the player in the database
-        await someDatabaseModule.updatePlayer(player); // use your actual database module's method
-
-        res.writeHead(200, {
-            'Content-Type': 'application/json'
-        });
-        res.end(JSON.stringify({ status: 'success', message: 'Player updated' }));
-    } catch (error) {
-        console.error('An error occurred:', error);
-        res.writeHead(500, {
-            'Content-Type': 'application/json'
-        });
-        res.end(JSON.stringify({ status: 'error', message: 'Internal server error' }));
-    }
-}
+   
 }
