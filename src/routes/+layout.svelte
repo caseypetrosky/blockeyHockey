@@ -1,6 +1,6 @@
 <script>
 	import '../app.postcss';
-    let myImage = '/src/static/bhl.png';
+    let myImage = '/bhl.png';
 	import { goto } from '$app/navigation';
 	export let data;
 	

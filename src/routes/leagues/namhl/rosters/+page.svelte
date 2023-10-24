@@ -21,7 +21,7 @@
     {#each data.team as t}
       <div class="flex gap-2">
         <a href="/teams/{t.id}" class="text-4xl font-bold" >{t.name}</a>
-        <img src="/src/static/logos/{t.id}.png" class="h-12 w-12 object-contain" alt="Team Logo" />
+        <img src="/teamlogos/{t.id}.png" class="h-12 w-12 object-contain" alt="Team Logo" />
       </div>
       <hr class="border-2 w-full" style="border-color: {t.color}">
       <div class="grid lg:grid-cols-10 md:grid-cols-5 sm:grid-cols-5 grid-cols-3">

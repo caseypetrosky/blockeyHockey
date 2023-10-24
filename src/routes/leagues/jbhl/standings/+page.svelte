@@ -134,7 +134,7 @@ $: array = [...teamStats];
 					<td>{i +1}</td>
           <td class="text-2xl flex gap-2" style="background-color: {team.color}; background-opacity:50">
             <a href="/teams/{team.id}">{team.name}</a>
-            <img src="/src/static/logos/{team.id}.png" class="h-12 w-12 object-contain" alt="Team Logo" />
+            <img src="/teamlogos/{team.id}.png" class="h-12 w-12 object-contain" alt="Team Logo" />
           </td>
           <td class="text-xl">{team.gamesPlayed}</td>
           <td class="text-xl">{team.wins}</td>

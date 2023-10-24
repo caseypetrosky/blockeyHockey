@@ -4,7 +4,7 @@
 
     import {page} from '$app/stores';
     export let data;
-    let teamImg = `/src/static/logos/${data.team.id}.png`;
+    let teamImg = `/teamlogos/${data.team.id}.png`;
     let rinkImg = `/src/static/logos/${data.team.id}rink.png`
     let teamPlayers = data.players;
     let teamColor = data.team.color;
@@ -111,10 +111,10 @@
             {/if}
             <div class="">
                 <div class="flex">
-                    <img src="/src/static/logos/{game.home_team.id}.png" alt="hometeam img" class="h-12 w-12 mr-2">
+                    <img src="/teamlogos/{game.home_team.id}.png" alt="hometeam img" class="h-12 w-12 mr-2">
                     <p>{game.home_teamId} - {game.home_team.game_team_stats[0].goals_scored}</p>
                 </div><div class="flex">
-                    <img src="/src/static/logos/{game.away_team.id}.png" alt="hometeam img" class="h-12 w-12 mr-2">
+                    <img src="/teamlogos/{game.away_team.id}.png" alt="hometeam img" class="h-12 w-12 mr-2">
                     <p>{game.away_teamId} - {game.away_team.game_team_stats[0].goals_scored}</p>
                 </div>
             </div>
