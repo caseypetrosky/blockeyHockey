@@ -8,8 +8,16 @@ export const load = async ({ params }) => {
         },
         include: {  
             //include the stats of the player
-            game_player_stats:true,
-            game_goalie_stats:true,
+            game_player_stats: {
+                include: {
+                    game: true // Assuming 'game' is a relation that includes 'season' and 'isPlayoff'
+                }
+            },
+            game_goalie_stats: {
+                include: {
+                    game: true // Assuming 'game' is a relation that includes 'season' and 'isPlayoff'
+                }
+            },
             allTimeSkaterStats:true,
             allTimeGoalieStats:true,
             team: {
@@ -20,54 +28,62 @@ export const load = async ({ params }) => {
             }}
         }
     });
-    let seaonalGoals = 0;
-    let seasonalAssists = 0;
-    let seasonalPoints = 0;
-    let seasonaltouches = 0;
-    let seasonaltoi = 0;
-    let seasonalshots = 0;
-    let seasonalgoals_allowed = 0;
-    let seasonalsaves = 0;
-    let seasonalgp = 0;
-    let seasonalshutouts = 0;
 
-    player.game_player_stats.forEach((game) => {
-        seasonalgp++;
-        seaonalGoals += game.goals_scored;
-        seasonalAssists += game.assists;
-        seasonalPoints += game.goals_scored;
-        seasonalPoints += game.assists;
-        seasonaltouches += game.touches;
-        seasonaltoi += game.time_on_ice;
-      });
-    player.game_goalie_stats.forEach((game) => {
-        seasonalshots += game.shots;
-        seasonalgoals_allowed += game.goals_allowed;
-        seasonalsaves += game.saves;
-        if(game.shutout === true){
-            seasonalshutouts++;
+    let seasonsArray = [];
+
+    player.game_player_stats.forEach((stat) => {
+        const { game } = stat;
+        const seasonKey = `${game.seasonId}`;
+        const typeKey = game.isPlayoff ? 'playoffs' : 'regular';
+    
+        let seasonEntry = seasonsArray.find(s => s.id === seasonKey) || {
+            id: seasonKey,
+            regular: { player: {}, goalie: {} },
+            playoffs: { player: {}, goalie: {} }
+        };
+    
+        seasonEntry[typeKey].player = {
+            gp: (seasonEntry[typeKey].player.gp || 0) + 1,
+            goals: (seasonEntry[typeKey].player.goals || 0) + stat.goals_scored,
+            assists: (seasonEntry[typeKey].player.assists || 0) + stat.assists,
+            points: (seasonEntry[typeKey].player.points || 0) + stat.goals_scored + stat.assists,
+            touches: (seasonEntry[typeKey].player.touches || 0) + stat.touches,
+            toi: (seasonEntry[typeKey].player.toi || 0) + stat.time_on_ice,
+        };
+    
+        if (!seasonsArray.some(s => s.id === seasonKey)) {
+            seasonsArray.push(seasonEntry);
         }
     });
+    
+    player.game_goalie_stats.forEach((stat) => {
+        const { game } = stat;
+        const seasonKey = `${game.seasonId}`;
+        const typeKey = game.isPlayoff ? 'playoffs' : 'regular';
+    
+        let seasonEntry = seasonsArray.find(s => s.id === seasonKey);
+    
+        if (!seasonEntry) {
+            seasonEntry = {
+                id: seasonKey,
+                regular: { player: {}, goalie: {} },
+                playoffs: { player: {}, goalie: {} }
+            };
+            seasonsArray.push(seasonEntry);
+        }
+    
+        seasonEntry[typeKey].goalie = {
+            shots: (seasonEntry[typeKey].goalie.shots || 0) + stat.shots,
+            goals_allowed: (seasonEntry[typeKey].goalie.goals_allowed || 0) + stat.goals_allowed,
+            saves: (seasonEntry[typeKey].goalie.saves || 0) + stat.saves,
+            shutouts: (seasonEntry[typeKey].goalie.shutouts || 0) + (stat.shutout ? 1 : 0)
+        };
+    });
+    
+   
     const consolidatedPlayerObject = {
         ...player,
-        seasonalstats: {
-            goals: seaonalGoals,
-            assists: seasonalAssists,
-            points: seasonalPoints,
-            touches: seasonaltouches,
-            toi: seasonaltoi,
-            gp: seasonalgp,
-        },
-        seasonalgoaliestats: { 
-            touches: seasonaltouches,
-            toi: seasonaltoi,
-            gp: seasonalgp,
-            goals_allowed: seasonalgoals_allowed,
-            saves: seasonalsaves,
-            shots: seasonalshots,
-            shutouts: seasonalshutouts,
-            
-        }
+        seasonsArray,
     };
     return {
         player: consolidatedPlayerObject,

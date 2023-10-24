@@ -2,62 +2,98 @@
     import {page} from '$app/stores';
     import {Tabs, TabItem} from 'flowbite-svelte';
     export let data;
-     let savepercentage = 0;
-     let gaa = 0;
-    if(data.player.goalie){
-        savepercentage = parseFloat((data.player.seasonalgoaliestats.saves / data.player.seasonalgoaliestats.shots)*100).toFixed(2);
-        gaa = parseFloat(data.player.seasonalgoaliestats.goals_allowed / data.player.seasonalgoaliestats.gamesPlayed).toFixed(2);
+    let savepercentage = 0;
+    let gaa = 0;
+    
+
+    //add regular and playoff ppg to each season
+    data.player.seasonsArray.forEach(season => {
+        
+        if (season.playoffs.gp == undefined) {
+            season.playoffs = {
+                player: {
+                    gp: 0, goals: 0, assists: 0, points: 0, touches: 0, toi: 0, ppg: "0.00"
+                }
+
+            };
+        }
+        if(data.player.goalie && season.playoffs.goalie == undefined){
+            season.playoffs.goalie = {
+                gp: 0, shots: 0, saves: 0, save_percentage: "0.00", goals_allowed: 0, shutouts: 0, gaa: "0.00"
+            }
+        }
+
+
+            
+        if(data.player.goalie){
+            let regularSavePercentage = parseFloat((season.regular.goalie.saves / season.regular.goalie.shots*100)).toFixed(2);
+            season.regular.goalie.save_percentage = isNaN(regularSavePercentage) ? "0.00" : regularSavePercentage;
+            
+            let playoffsSavePercentage = parseFloat((season.playoffs.goalie.saves / season.playoffs.goalie.shots*100)).toFixed(2);
+            season.playoffs.goalie.save_percentage = isNaN(playoffsSavePercentage) ? "0.00" : playoffsSavePercentage;
+
+            let regularGAA = parseFloat(season.regular.goalie.goals_allowed / (season.regular.goalie.gp || 1)).toFixed(2);
+            season.regular.goalie.gaa = isNaN(regularGAA) ? "0.00" : regularGAA;
+
+            let playoffsGAA = parseFloat(season.playoffs.goalie.goals_allowed / (season.playoffs.goalie.gp || 1)).toFixed(2);
+            season.playoffs.goalie.gaa = isNaN(playoffsGAA) ? "0.00" : playoffsGAA;
+        }else{
+            
+            let regularPPG = parseFloat(season.regular.player.points / (season.regular.player.gp || 1)).toFixed(2);
+            season.regular.player.ppg = isNaN(regularPPG) ? "0.00" : regularPPG;
+            
+            let playoffsPPG = parseFloat(season.playoffs.player.points / (season.playoffs.player.gp || 1)).toFixed(2);
+            season.playoffs.player.ppg = isNaN(playoffsPPG) ? "0.00" : playoffsPPG;
+        }  
+    });
+
+
+    let ggp = 0
+    let agp = 0
+    let psp = 0
+    let gsp = 0
+    let asp = 0
+    let allTimePPG = 0
+    let winpercentage = 0
+    let allTimesavepercentage = 0
+    let spg = 0
+    let allTimegaa = 0
+
+
+    let alltimeSkater = {}
+    let alltimeGoalie = {};
+    alltimeSkater.goals= 0;
+    alltimeSkater.assists= 0;
+    alltimeSkater.games_played= 0;
+    alltimeSkater.seasons_played= 0;
+    alltimeSkater.points= 0;
+    alltimeGoalie.seasons_played= 0;
+    alltimeGoalie.games_played= 0;
+    alltimeGoalie.wins= 0;
+    alltimeGoalie.losses= 0;
+    alltimeGoalie.shutouts= 0;
+    alltimeGoalie.shots= 0;
+    alltimeGoalie.goals_allowed= 0;
+    alltimeGoalie.saves= 0;
+
+    if(!data.player.goalie && data.player.allTimeSkaterStats[0]!=null) {
+        alltimeSkater = data.player.allTimeSkaterStats[0];
+        alltimeSkater.points = alltimeSkater.goals + alltimeSkater.assists;
+        ggp = parseFloat(alltimeSkater.goals / alltimeSkater.games_played).toFixed(2);
+        agp = parseFloat(alltimeSkater.assists / alltimeSkater.games_played).toFixed(2);
+        psp = parseFloat(alltimeSkater.points / alltimeSkater.seasons_played).toFixed(2);
+        gsp = parseFloat(alltimeSkater.goals / alltimeSkater.seasons_played).toFixed(2);
+        asp = parseFloat(alltimeSkater.assists / alltimeSkater.seasons_played).toFixed(2);
+        allTimePPG = parseFloat(alltimeSkater.points / alltimeSkater.games_played).toFixed(2);
     }
-let ppg = 0
-if( data.player.seasonalgoaliestats.gamesPlayed> 0){
-        ppg = parseFloat(data.player.seasonalstats.points / data.player.seasonalstats.gp).toFixed(2);
-   };
-let ggp = 0
-let agp = 0
-let psp = 0
-let gsp = 0
-let asp = 0
-let allTimePPG = 0
-let winpercentage = 0
-let allTimesavepercentage = 0
-let spg = 0
-let allTimegaa = 0
 
-
-let alltimeSkater = {}
-let alltimeGoalie = {};
-alltimeSkater.goals= 0;
-alltimeSkater.assists= 0;
-alltimeSkater.games_played= 0;
-alltimeSkater.seasons_played= 0;
-alltimeSkater.points= 0;
-alltimeGoalie.seasons_played= 0;
-alltimeGoalie.games_played= 0;
-alltimeGoalie.wins= 0;
-alltimeGoalie.losses= 0;
-alltimeGoalie.shutouts= 0;
-alltimeGoalie.shots= 0;
-alltimeGoalie.goals_allowed= 0;
-alltimeGoalie.saves= 0;
-
-if(!data.player.goalie && data.player.allTimeSkaterStats[0]!=null) {
-alltimeSkater = data.player.allTimeSkaterStats[0];
-alltimeSkater.points = alltimeSkater.goals + alltimeSkater.assists;
-ggp = parseFloat(alltimeSkater.goals / alltimeSkater.games_played).toFixed(2);
-agp = parseFloat(alltimeSkater.assists / alltimeSkater.games_played).toFixed(2);
-psp = parseFloat(alltimeSkater.points / alltimeSkater.seasons_played).toFixed(2);
-gsp = parseFloat(alltimeSkater.goals / alltimeSkater.seasons_played).toFixed(2);
-asp = parseFloat(alltimeSkater.assists / alltimeSkater.seasons_played).toFixed(2);
-allTimePPG = parseFloat(alltimeSkater.points / alltimeSkater.games_played).toFixed(2);}
-
-if(data.player.goalie){
-alltimeGoalie = data.player.allTimeGoalieStats[0];
-winpercentage = parseFloat((alltimeGoalie.wins / alltimeGoalie.games_played)*100).toFixed(2);
-allTimesavepercentage = parseFloat((alltimeGoalie.saves / alltimeGoalie.shots*100)).toFixed(2);
-spg = parseFloat(alltimeGoalie.shots / alltimeGoalie.games_played).toFixed(2);
-allTimegaa = parseFloat(alltimeGoalie.goals_allowed / alltimeGoalie.games_played).toFixed(2);
-}
-
+    if(data.player.goalie){
+        alltimeGoalie = data.player.allTimeGoalieStats[0];
+        winpercentage = parseFloat((alltimeGoalie.wins / alltimeGoalie.games_played)*100).toFixed(2);
+        allTimesavepercentage = parseFloat((alltimeGoalie.saves / alltimeGoalie.shots*100)).toFixed(2);
+        spg = parseFloat(alltimeGoalie.shots / alltimeGoalie.games_played).toFixed(2);
+        allTimegaa = parseFloat(alltimeGoalie.goals_allowed / alltimeGoalie.games_played).toFixed(2);
+    }
 
 </script>
 <div class="container mx-auto  mt-10">
@@ -78,205 +114,276 @@ allTimegaa = parseFloat(alltimeGoalie.goals_allowed / alltimeGoalie.games_played
             
         </div>
     </div>  
+
+
+
+
+
     <h2 class="text-2xl mt-4">Stats</h2>
     <hr class=" border-2 w-1/4" style="border-color: {data.player.team.color}">
-    <Tabs style="pill" class="mt-4 text-white">
-        <TabItem open class="text-white">
-            <span slot="title">S19 stats</span>
-            {#if !data.player.goalie}
-            <div class="p-8">
-                <h2 class="text-2xl mt-4">S19 Stats</h2>
-                <hr class="border-2 w-1/4" style="border-color: {data.player.team.color}">
-                <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mt-4">
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Games Played</h2>
-                        <p>{data.player.seasonalstats.gp}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals</h2>
-                        <p>{data.player.seasonalstats.goals}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Assists</h2>
-                        <p>{data.player.seasonalstats.assists}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Points</h2>
-                        <p>{data.player.seasonalstats.points}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Touches</h2>
-                        <p>{data.player.seasonalstats.touches}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Time On Ice</h2>
-                        <p>{data.player.seasonalstats.toi}</p>
-                    </div>
-                    
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Points Per Game</h2>
-                        <p>{ppg}</p>
-                    </div>
-                </div>
-            </div>
-           
-            {/if}
-            {#if data.player.goalie}
-            <div class="p-8">
-                <h2 class="text-2xl mt-4">S19 Goalie Stats</h2>
-                <hr class="border-2 w-1/4" style="border-color: {data.player.team.color}">
-                <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mt-4">
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Games Played</h2>
-                        <p>{data.player.seasonalgoaliestats.gp}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Shots</h2>
-                        <p>{data.player.seasonalgoaliestats.shots}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Saves</h2>
-                        <p>{data.player.seasonalgoaliestats.saves}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Save %</h2>
-                        <p>{savepercentage}%</p>
-                        </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals Allowed</h2>
-                        <p>{data.player.seasonalgoaliestats.goals_allowed}</p>
-                        </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Shutouts</h2>
-                        <p>{data.player.seasonalgoaliestats.shutouts}</p>
-                        </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold"  style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals Against Average</h2>
-                        <p>{gaa}</p>
-                        </div>
-                     
-                </div>
-            </div>
-           
-            {/if}
-        </TabItem>
-        <TabItem >
-            <span slot="title">All Time Stats</span>
-            {#if !data.player.goalie}
-            <div class="p-8">
-                <h2 class="text-2xl mt-4">All time Career Stats s1-s18</h2>
-                <hr class="border-2 w-1/4" style="border-color: {data.player.team.color}">
-                <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mt-4">
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Seasons Played</h2>
-                        <p>{alltimeSkater.seasons_played}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Games Played</h2>
-                        <p>{alltimeSkater.games_played}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals</h2>
-                        <p>{alltimeSkater.goals}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Assists</h2>
-                        <p>{alltimeSkater.assists}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Points</h2>
-                        <p>{alltimeSkater.points}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals per Games Played</h2>
-                        <p>{ggp}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Assists per Games Played</h2>
-                        <p>{agp}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Points per Games Played</h2>
-                        <p>{allTimePPG}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals per Season Played</h2>
-                        <p>{gsp}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Assists per Season Played</h2>
-                        <p>{asp}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Points per Season Played</h2>
-                        <p>{psp}</p>
-                    </div>
-                    
-                </div>
-            </div>
-     
-            {/if}
-            {#if data.player.goalie}
-            <div class="p-8">
-                <h2 class="text-2xl mt-4">All time Goalie Stats s1-s18</h2>
-                <hr class="border-2 w-1/4" style="border-color: {data.player.team.color}">
-                <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mt-4">
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Seasons Played</h2>
-                        <p>{alltimeGoalie.seasons_played}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Games Played</h2>
-                        <p>{alltimeGoalie.games_played}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Wins</h2>
-                        <p>{alltimeGoalie.wins}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Losses</h2>
-                        <p>{alltimeGoalie.losses}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Win%</h2>
-                        <p>{winpercentage}%</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Shutouts</h2>
-                        <p>{alltimeGoalie.shutouts}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Shots Faced</h2>
-                        <p>{alltimeGoalie.shots}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals Allowed</h2>
-                        <p>{alltimeGoalie.goals_allowed}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Saves</h2>
-                        <p>{alltimeGoalie.saves}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">SV%</h2>
-                        <p>{allTimesavepercentage}%</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Shots per Game</h2>
-                        <p>{spg}</p>
-                    </div>
-                    <div class="p-2">
-                        <h2 class="text-lg font-semibold" style="border-bottom: 2px solid {data.player.team.color}; padding-bottom: 0.25rem;">Goals Against Average</h2>
-                        <p>{allTimegaa}</p>
-                    </div>
-                </div>
-            </div>
-            
-            
-            {/if}
+   <!-- ... other code ... -->
 
-        </TabItem>
-    </Tabs>
+<Tabs style="pill" class="mt-4 text-white">
+        
+    <TabItem open class="text-white">
+        <span slot="title">Seasonal League Stats</span>
+
+        <!-- Nested Tabs for Regular Season and Playoffs -->
+        <Tabs style="pill" class="mt-4 text-white">
+            
+            <!-- Regular Season Tab -->
+            <TabItem open class="text-white">
+                <span slot="title">Regular Season</span>
+
+                    {#if !data.player.goalie}
+                    <div class="">
+                        <h2 class="text-2xl">Seasonal League Stats</h2>
+                        <hr class="border-2 w-1/4 mb-4" style="border-color: {data.player.team.color}">
+                            <div class="overflow-x-auto">
+                                <table class="table-auto border-collapse w-full">
+                                    <thead>
+                                        <tr class="text-sm font-medium text-left" style="border-bottom: 2px solid {data.player.team.color};">
+                                            <th class="">Season</th>
+                                            <th class="">Games Played</th>
+                                            <th class="">Goals</th>
+                                            <th class="">Assists</th>
+                                            <th class="">Points</th>
+                                            <th class="">Touches</th>
+                                            <th class="">Time On Ice</th>
+                                            <th class="">Points Per Game</th>
+                                        </tr>
+                                    </thead>
+                                        {#each data.player.seasonsArray as season }
+                                            <tr class="text-sm font-normal ">
+                                                <td>{season.id}</td>
+                                                <td class="">{season.regular.player.gp}</td>
+                                                <td class="">{season.regular.player.goals}</td>
+                                                <td class="">{season.regular.player.assists}</td>
+                                                <td class="">{season.regular.player.points}</td>
+                                                <td class="">{season.regular.player.touches}</td>
+                                                <td class="">{season.regular.player.toi}</td>
+                                                <td class="">{season.regular.player.ppg}</td>
+                                        </tr>
+                                        {/each}
+                                        
+                                </table>
+
+                        </div>
+                    </div>
+                
+                    {/if}
+                    {#if data.player.goalie}
+                    <div class="p-8">
+                        <h2 class="text-2xl">S19 Goalie Stats</h2>
+                        <hr class="border-2 w-1/4 mb-4" style="border-color: {data.player.team.color}">
+
+                            <div class="overflow-x-auto">
+                                <table class="table-auto border-collapse w-full">
+                                    <thead>
+                                        <tr class="text-sm font-medium text-left" style="border-bottom: 2px solid {data.player.team.color};">
+                                            <td>Season</td>
+                                            <th class="">Games Played</th>
+                                            <th class="">Shots</th>
+                                            <th class="">Saves</th>
+                                            <th class="">Save %</th>
+                                            <th class="">Goals Allowed</th>
+                                            <th class="">Shutouts</th>
+                                            <th class="">Goals Against Average</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm font-normal ">
+                                        {#each data.player.seasonsArray as season }
+                                            <tr class="text-sm font-normal ">
+                                                <td>{season.id}</td>
+                                                <td class="">{season.regular.player.gp}</td>
+                                                <td class="">{season.regular.goalie.shots}</td>
+                                                <td class="">{season.regular.goalie.saves}</td>
+                                                <td class="">{season.regular.goalie.save_percentage}%</td>
+                                                <td class="">{season.regular.goalie.goals_allowed}</td>
+                                                <td class="">{season.regular.goalie.shutouts}</td>
+                                                <td class="">{season.regular.goalie.gaa}</td>
+                                        </tr>
+                                        {/each}
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+                
+                    {/if}
+            </TabItem>
+
+            <!-- Playoffs Tab -->
+            <TabItem class="text-white">
+                <span slot="title">Playoffs </span>
+
+                    {#if !data.player.goalie}
+                    <div class="">
+                        <h2 class="text-2xl">Seasonal Playoff Stats</h2>
+                        <hr class="border-2 w-1/4 mb-4" style="border-color: {data.player.team.color}">
+                            <div class="overflow-x-auto">
+                                <table class="table-auto border-collapse w-full">
+                                    <thead>
+                                        <tr class="text-sm font-medium text-left" style="border-bottom: 2px solid {data.player.team.color};">
+                                            <th class="">Season</th>
+                                            <th class="">Games Played</th>
+                                            <th class="">Goals</th>
+                                            <th class="">Assists</th>
+                                            <th class="">Points</th>
+                                            <th class="">Touches</th>
+                                            <th class="">Time On Ice</th>
+                                            <th class="">Points Per Game</th>
+                                        </tr>
+                                    </thead>
+                                        {#each data.player.seasonsArray as season }
+                                            <tr class="text-sm font-normal ">
+                                                <td>{season.id}</td>
+                                                <td class="">{season.playoffs.player.gp}</td>
+                                                <td class="">{season.playoffs.player.goals}</td>
+                                                <td class="">{season.playoffs.player.assists}</td>
+                                                <td class="">{season.playoffs.player.points}</td>
+                                                <td class="">{season.playoffs.player.touches}</td>
+                                                <td class="">{season.playoffs.player.toi}</td>
+                                                <td class="">{season.playoffs.player.ppg}</td>
+                                        </tr>
+                                        {/each}
+                                        
+                                </table>
+
+                        </div>
+                    </div>
+                
+                    {/if}
+                    {#if data.player.goalie}
+                    <div class="p-8">
+                        <h2 class="text-2xl">S19 Goalie Stats</h2>
+                        <hr class="border-2 w-1/4 mb-4" style="border-color: {data.player.team.color}">
+
+                            <div class="overflow-x-auto">
+                                <table class="table-auto border-collapse w-full">
+                                    <thead>
+                                        <tr class="text-sm font-medium text-left" style="border-bottom: 2px solid {data.player.team.color};">
+                                            <td>Season</td>
+                                            <th class="">Games Played</th>
+                                            <th class="">Shots</th>
+                                            <th class="">Saves</th>
+                                            <th class="">Save %</th>
+                                            <th class="">Goals Allowed</th>
+                                            <th class="">Shutouts</th>
+                                            <th class="">Goals Against Average</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm font-normal ">
+                                        {#each data.player.seasonsArray as season }
+                                            <tr class="text-sm font-normal ">
+                                                <td>{season.id}</td>
+                                                <td class="">{season.playoffs.player.gp}</td>
+                                                <td class="">{season.playoffs.goalie.shots}</td>
+                                                <td class="">{season.playoffs.goalie.saves}</td>
+                                                <td class="">{season.playoffs.goalie.save_percentage}%</td>
+                                                <td class="">{season.playoffs.goalie.goals_allowed}</td>
+                                                <td class="">{season.playoffs.goalie.shutouts}</td>
+                                                <td class="">{season.playoffs.goalie.gaa}</td>
+                                        </tr>
+                                        {/each}
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+                
+                    {/if}
+            </TabItem>
+
+        </Tabs>
+
+    </TabItem>
+
+    <TabItem >
+        <span slot="title">All Time Stats</span>
+        {#if !data.player.goalie}
+        <div class="p-8">
+            <h2 class="text-2xl mt-4">All time Career Stats s1-s18</h2>
+            <hr class="border-2 w-1/4" style="border-color: {data.player.team.color}">
+            <table>
+                <tr class="text-sm font-medium text-left" style="border-bottom: 2px solid {data.player.team.color};">
+                    <th class="px-4 py-2">Seasons Played</th>
+                    <th class="px-4 py-2">Games Played</th>
+                    <th class="px-4 py-2">Goals</th>
+                    <th class="px-4 py-2">Assists</th>
+                    <th class="px-4 py-2">Points</th>
+                    <th class="px-4 py-2">Goals Per Game</th>
+                    <th class="px-4 py-2">Assists Per Game</th>
+                    <th class="px-4 py-2">Points Per Game</th>
+                    <th class="px-4 py-2">Goals Per Season</th>
+                    <th class="px-4 py-2">Assists Per Season</th>
+                    <th class="px-4 py-2">Points Per Season</th>
+                </tr> 
+                <tbody> 
+                    <td class="px-4 py-2">{alltimeSkater.seasons_played}</td>
+                    <td class="px-4 py-2">{alltimeSkater.games_played}</td>
+                    <td class="px-4 py-2">{alltimeSkater.goals}</td>
+                    <td class="px-4 py-2">{alltimeSkater.assists}</td>
+                    <td class="px-4 py-2">{alltimeSkater.points}</td>
+                    <td class="px-4 py-2">{ggp}</td>
+                    <td class="px-4 py-2">{agp}</td>
+                    <td class="px-4 py-2">{allTimePPG}</td>
+                    <td class="px-4 py-2">{gsp}</td>
+                    <td class="px-4 py-2">{asp}</td>
+                    <td class="px-4 py-2">{psp}</td>
+                </tbody>
+            </table>
+         
+        </div>
+ 
+        {/if}
+        {#if data.player.goalie}
+        <div class="p-8">
+            <h2 class="text-2xl mt-4">All time Goalie Stats s1-s18</h2>
+            <hr class="border-2 w-1/4" style="border-color: {data.player.team.color}">
+            <table>
+                <tr class="text-sm font-medium text-left" style="border-bottom: 2px solid {data.player.team.color};">
+                    <th class="px-4 py-2">Seasons Played</th>
+                    <th class="px-4 py-2">Games Played</th>
+                    <th class="px-4 py-2">Wins</th>
+                    <th class="px-4 py-2">Losses</th>
+                    <th class="px-4 py-2">Win %</th>
+                    <th class="px-4 py-2">Shutouts</th>
+                    <th class="px-4 py-2">Shots Faced</th>
+                    <th class="px-4 py-2">Goals Allowed</th>
+                    <th class="px-4 py-2">Saves</th>
+                    <th class="px-4 py-2">Save %</th>
+                    <th class="px-4 py-2">Shots Per Game</th>
+                    <th class="px-4 py-2">Goals Against Average</th>
+
+                </tr> 
+                <tbody> 
+                    <td class="px-4 py-2">{alltimeGoalie.seasons_played}</td>
+                    <td class="px-4 py-2">{alltimeGoalie.games_played}</td>
+                    <td class="px-4 py-2">{alltimeGoalie.wins}</td>
+                    <td class="px-4 py-2">{alltimeGoalie.losses}</td>
+                    <td class="px-4 py-2">{winpercentage}%</td>
+                    <td class="px-4 py-2">{alltimeGoalie.shutouts}</td>
+                    <td class="px-4 py-2">{alltimeGoalie.shots}</td>
+                    <td class="px-4 py-2">{alltimeGoalie.goals_allowed}</td>
+                    <td class="px-4 py-2">{alltimeGoalie.saves}</td>
+                    <td class="px-4 py-2">{allTimesavepercentage}%</td>
+                    <td class="px-4 py-2">{spg}</td>
+                    <td class="px-4 py-2">{allTimegaa}</td>
+                </tbody>
+            </table>
+            
+        </div>
+        
+        
+        {/if}
+
+    </TabItem>
+
+</Tabs>
+
+<!-- ... other code ... -->
+
     
     <h2 class="text-2xl mt-4">Awards</h2>
     <hr class=" border-2 w-1/4" style="border-color: {data.player.team.color}">
@@ -335,5 +442,3 @@ allTimegaa = parseFloat(alltimeGoalie.goals_allowed / alltimeGoalie.games_played
         </table>
 -->
 </div>
-
-

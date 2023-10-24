@@ -124,6 +124,7 @@ const getUUID = async (username) => {
 
 export const actions = {
     newPlayerForm: async (event) => {
+        console.log(event);
         const form = await superValidate(event, newPlayerSchema);
         
 

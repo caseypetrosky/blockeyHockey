@@ -7,7 +7,7 @@
 </div>
 <div class="container mx-auto px-4 py-8">
   <section class="text-white">
-    <div class="hero bg-cover bg-center h-96" style="background-image: url('path_to_your_image.jpg')">
+    <div class="hero bg-cover bg-center h-96" >
       <div class="flex items-center justify-center h-full w-full bg-opacity-50 bg-black">
         <div class="text-center">
           <h1 class="text-4xl font-bold">Blockey Hockey League</h1>

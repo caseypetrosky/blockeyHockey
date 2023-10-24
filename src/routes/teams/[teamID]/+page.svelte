@@ -71,14 +71,60 @@
     {/if}
         </div>
    
-    <h2 class="text-2xl mt-4">Stadium</h2>
+    <h2 class="text-2xl mt-4">Recent games (Oldest To Newest)</h2>
     <hr class="border-2 w-1/4" style="border-color: {teamColor}">
-    
-</div>  
+        <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
+    {#each data.games as game}
+        <div class="flex gap-2 border-2 max-w-xs m-2 p-2" style="border-color:{teamColor}">
+            {#if game.home_teamId == data.team.id}
+                <div>
+                    <p>Home game vs {game.away_teamId}</p>
+                    {#if game.is_playoff}
+                        <p class=" text-yellow-500">Playoff Game</p>
+                    {:else}
+                        <p class=" ">Regular Season Game</p>
+                    {/if}
+                    {#if game.home_team.game_team_stats[0].goals_scored > game.home_team.game_team_stats[0].goals_allowed}
+                        <p class="text-xl text-green-500">Win</p>
+                    {:else if game.home_team.game_team_stats[0].goals_scored < game.home_team.game_team_stats[0].goals_allowed && !game.is_overtime}
+                        <p class="text-xl text-red-500">Loss</p>
+                    {:else}
+                        <p class="text-xl text-white">Overtime Loss</p>
+                    {/if}
+                </div>
+            {:else}
+                <div>
+                    <p>Away game @ {game.home_teamId}</p>
+                    {#if game.is_playoff}
+                        <p class=" text-yellow-500">Playoff Game</p>
+                    {:else}
+                        <p class="">Regular Season Game</p>
+                    {/if}
+                    {#if game.away_team.game_team_stats[0].goals_scored > game.away_team.game_team_stats[0].goals_allowed}
+                        <p class="text-xl text-green-500">Win</p>
+                    {:else if game.away_team.game_team_stats[0].goals_scored < game.away_team.game_team_stats[0].goals_allowed && !game.is_overtime}
+                        <p class="text-xl text-red-500">Loss</p>
+                    {:else}
+                        <p class="text-xl text-white">Overtime Loss</p>
+                    {/if}
+                </div>
+            {/if}
+            <div class="">
+                <div class="flex">
+                    <img src="/src/static/logos/{game.home_team.id}.png" alt="hometeam img" class="h-12 w-12 mr-2">
+                    <p>{game.home_teamId} - {game.home_team.game_team_stats[0].goals_scored}</p>
+                </div><div class="flex">
+                    <img src="/src/static/logos/{game.away_team.id}.png" alt="hometeam img" class="h-12 w-12 mr-2">
+                    <p>{game.away_teamId} - {game.away_team.game_team_stats[0].goals_scored}</p>
+                </div>
+            </div>
+        </div>
+        
+        {/each}
+    </div>
+    </div>
+
 <!--
 <img src={rinkImg}>
-
-<pre>
-    {JSON.stringify($page,null,2)}
-</pre>  
 -->
+
