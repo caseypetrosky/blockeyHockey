@@ -1,109 +1,122 @@
+
 import prisma from '$lib/prisma';
-let flattenStats = (player) => {
-    let sp = 0;
-    let gp = 0;    
-    let goals = 0;
-    let assists = 0;
-    let points = 0;
 
-    let wins = 0;
-    let losses = 0;
-    let goals_allowed = 0;
-    let saves = 0;
-    let shots = 0;
-    let shutouts = 0;
+const flattenStats = (player) => {
+    // Initialize statistics variables
+    let sp = 0, gp = 0, goals = 0, assists = 0, points = 0,
+        wins = 0, losses = 0, goals_allowed = 0, saves = 0,
+        shots = 0, shutouts = 0;
+    let seasons = [];
 
-
-    player.allTimeSkaterStats.forEach((game) => {
-        goals += game.goals;
-        assists += game.assists;
-        points += game.goals;
-        points += game.assists;
-        sp += game.seasons_played;
-        gp += game.games_played;
-      });
-    player.allTimeGoalieStats.forEach((game) => {
-        shots += game.shots;
-        goals_allowed += game.goals_allowed;
-        saves += game.saves;
-        sp += game.seasons_played;
-        gp += game.games_played;
-        wins += game.wins;
-        losses += game.losses;
-        shutouts += game.shutouts;
-    });
- 
-    let ggp = 0;
-    let agp = 0;
-    let psp = 0;
-    let gsp = 0;
-    let asp = 0;
-    let allTimePPG = 0;
-    let winpercentage = 0;
-    let allTimesavepercentage = 0;
-    let spg = 0;
-    let allTimegaa = 0;
-
-    if(!player.goalie && player.allTimeSkaterStats[0] != null) {
-    ggp = parseFloat( goals /    gp).toFixed(2);
-    agp = parseFloat( assists /    gp).toFixed(2);
-    psp = parseFloat( points /  sp).toFixed(2);
-    gsp = parseFloat( goals /  sp).toFixed(2);
-    asp = parseFloat( assists /  sp).toFixed(2);
-    allTimePPG = parseFloat( points /    gp).toFixed(2);}
-    if(player.goalie && player.allTimeGoalieStats[0]!= null){
-    winpercentage = parseFloat((  wins /     gp)*100).toFixed(2);
-    allTimesavepercentage = parseFloat((  saves /   shots*100)).toFixed(2);
-    spg = parseFloat(  shots /     gp).toFixed(2);
-    allTimegaa = parseFloat(  goals_allowed /gp).toFixed(2);
-    }
-    const consolidatedPlayerObject = {
-        ...player,
-        skaterStats: {
-            goals: goals,
-            assists: assists,
-            points: points,
-            sp: sp,
-            gp: gp,
-            ggp: ggp,
-            agp: agp,
-            psp: psp,
-            gsp: gsp,
-            asp: asp,
-            allTimePPG: allTimePPG,
-        },
-       
-    };
-    if(player.goalie){
-        consolidatedPlayerObject.goalieStats = { 
-            wins: wins,
-            losses: losses,
-            sp: sp,
-            gp: gp,
-            goals_allowed: goals_allowed,
-            saves: saves,
-            shots: shots,
-            shutouts: shutouts,
-            winpercentage: winpercentage,
-            allTimesavepercentage: allTimesavepercentage,
-            spg: spg,
-            allTimegaa: allTimegaa,
+        if(player.allTimeSkaterStats != null){
+            goals = player.allTimeSkaterStats.goals;
+            assists = player.allTimeSkaterStats.assists;
+            points = goals + assists;
+            sp = player.allTimeSkaterStats.seasons_played;
+            gp = player.allTimeSkaterStats.games_played;
         }
-    }
-    return consolidatedPlayerObject;
-}
+
+        if(player.allTimeGoalieStats != null){
+            wins = player.allTimeGoalieStats.wins;
+            losses = player.allTimeGoalieStats.losses;
+            goals_allowed = player.allTimeGoalieStats.goals_allowed;
+            saves = player.allTimeGoalieStats.saves;
+            shots = player.allTimeGoalieStats.shots;
+            shutouts = player.allTimeGoalieStats.shutouts;
+        }
+        if (Array.isArray(player.game_player_stats)) {
+            player.game_player_stats.forEach(game => {
+                goals += game.goals_scored;
+                assists += game.assists;
+                points += game.goals_scored + game.assists;
+                gp += 1;
+                if (!seasons.includes(game.game.season)) {
+                    sp += 1;
+                    seasons.push(game.game.season);
+                }
+            });
+        }
+    
+        // Process goalie game stats
+        if (Array.isArray(player.game_goalie_stats)) {
+            player.game_goalie_stats.forEach(game => {
+                shots += game.shots;
+                goals_allowed += game.goals_allowed;
+                saves += game.saves;
+                if (game.shutout) {
+                    shutouts += 1;
+                }
+                //check if team won or lost
+                if(game.win){
+                    wins += 1;
+                }
+                else{
+                    losses += 1;
+                }
+                
+            });
+        }
+    
+
+    // Process skater stats
+   
+    // Process goalie stats
+    
+
+    // Prepare stats for output
+    const skaterStats = {
+        goals, assists, points, sp, gp,
+        ggp: gp ? parseFloat(goals / gp).toFixed(2) : '0.00',
+        agp: gp ? parseFloat(assists / gp).toFixed(2) : '0.00',
+        psp: sp ? parseFloat(points / sp).toFixed(2) : '0.00',
+        gsp: sp ? parseFloat(goals / sp).toFixed(2) : '0.00',
+        asp: sp ? parseFloat(assists / sp).toFixed(2) : '0.00',
+        allTimePPG: gp ? parseFloat(points / gp).toFixed(2) : '0.00'
+    };
+
+    const goalieStats = {
+        wins, losses, sp, gp, goals_allowed, saves, shots,
+        shutouts,
+        winpercentage: gp ? parseFloat((wins / gp) * 100).toFixed(2) : '0.00',
+        allTimesavepercentage: shots ? parseFloat((saves / shots) * 100).toFixed(2) : '0.00',
+        spg: gp ? parseFloat(shots / gp).toFixed(2) : '0.00',
+        allTimegaa: gp ? parseFloat(goals_allowed / gp).toFixed(2) : '0.00'
+    };
+
+    return {
+        ...player,
+        skaterStats: skaterStats ,
+        goalieStats:  goalieStats,
+    };
+};
+
 export const load = async ({}) => {
-    const player = await prisma.player.findMany({
-        //find a player in prisma where the username is equal to the username in the url or the uuid is equal to the uuid in the url
-        include: {  
-            //include the stats of the player
+    const players = await prisma.player.findMany({
+        include: {
             allTimeSkaterStats: true,
             allTimeGoalieStats: true,
-            }
-        
+            game_player_stats: {
+                include: {
+                    game: {
+                        select: {
+                            season: true
+                        }
+                    }
+                }
+            },
+            
+            game_goalie_stats: {
+                include: {
+                    game: {
+                        select: {
+                            season: true
+                        }
+                    }
+                }
+            },
+        }
     });
-    const consolidatedPlayerObject = player.map((player) => flattenStats(player));
-    return {
-        player: consolidatedPlayerObject,
-    }
-}
+
+    const consolidatedPlayerObjects = players.map(player => flattenStats(player));
+    return { player: consolidatedPlayerObjects };
+};

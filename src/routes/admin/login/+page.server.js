@@ -29,7 +29,6 @@ export const actions = {
                 form
             })
         }
-        console.log(form);
 
         const {username, password} = form.data;
 

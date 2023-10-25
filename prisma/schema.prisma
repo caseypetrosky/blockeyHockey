@@ -1,19 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
   id           String    @id @unique
   username     String    @unique
-  auth_session Session[]
-  key          Key[]
   role         String    @default("user")
+  key          Key[]
   logs         Logs[]
+  auth_session Session[]
 }
 
 model Session {
@@ -21,7 +21,7 @@ model Session {
   user_id        String
   active_expires BigInt
   idle_expires   BigInt
-  user           User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  user           User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([user_id])
 }
@@ -30,7 +30,7 @@ model Key {
   id              String  @id @unique
   hashed_password String?
   user_id         String
-  user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  user            User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([user_id])
 }
@@ -41,7 +41,7 @@ model Logs {
   type    String
   data    String
   date    DateTime
-  user    User     @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  user    User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@index([user_id])
 }
@@ -50,8 +50,8 @@ model League {
   id      Int      @id @default(autoincrement())
   name    String
   teams   Team[]
-  seasons season[]
   games   games[]
+  seasons season[]
 }
 
 model Team {
@@ -66,27 +66,27 @@ model Team {
   players         Player[]
   league          League            @relation(fields: [leagueId], references: [id])
   game_team_stats game_team_stats[]
-  home_games      games[]           @relation(name: "home_team")
-  away_games      games[]           @relation(name: "away_team")
+  away_games      games[]           @relation("away_team")
+  home_games      games[]           @relation("home_team")
 }
 
 model Player {
-  id                 Int                  @id @default(autoincrement())
-  uuid               String               @unique
+  id                 Int                 @id @default(autoincrement())
+  uuid               String              @unique
   username           String
-  number             Int                  @default(0)
-  goalie             Boolean              @default(false)
+  number             Int                 @default(0)
+  goalie             Boolean             @default(false)
   awards             String?
   league_roles       String?
   teamId             String
-  contractTier       String               @default("Amateur")
-  contractLength     Int                  @default(1)
-  contractPrice      Int                  @default(1500)
-  team               Team                 @relation(fields: [teamId], references: [id])
+  contractTier       String              @default("Amateur")
+  contractLength     Int                 @default(1)
+  contractPrice      Int                 @default(1500)
+  team               Team                @relation(fields: [teamId], references: [id])
+  allTimeGoalieStats allTimeGoalieStats?
+  allTimeSkaterStats allTimeSkaterStats?
   game_goalie_stats  game_goalie_stats[]
   game_player_stats  game_player_stats[]
-  allTimeSkaterStats allTimeSkaterStats[]
-  allTimeGoalieStats allTimeGoalieStats[]
 }
 
 model season {
@@ -101,18 +101,18 @@ model games {
   id                Int                 @id @default(autoincrement())
   home_teamId       String              @default("FA")
   away_teamId       String              @default("FA")
-  date              DateTime
+  date              DateTime            @db.Date
   is_playoff        Boolean             @default(false)
   is_overtime       Boolean             @default(false)
   leagueId          Int
   seasonId          String
-  home_team         Team                @relation(name: "home_team", fields: [home_teamId], references: [id])
-  away_team         Team                @relation(name: "away_team", fields: [away_teamId], references: [id])
   game_goalie_stats game_goalie_stats[]
   game_player_stats game_player_stats[]
   game_team_stats   game_team_stats[]
-  season            season              @relation(fields: [seasonId], references: [name])
+  away_team         Team                @relation("away_team", fields: [away_teamId], references: [id])
+  home_team         Team                @relation("home_team", fields: [home_teamId], references: [id])
   league            League              @relation(fields: [leagueId], references: [id])
+  season            season              @relation(fields: [seasonId], references: [name])
 }
 
 model game_team_stats {
@@ -149,6 +149,7 @@ model game_goalie_stats {
   time_on_ice   Int     @default(0)
   gameId        Int
   shutout       Boolean @default(false)
+  win           Boolean @default(false)
   game          games   @relation(fields: [gameId], references: [id])
   player        Player  @relation(fields: [playerId], references: [id])
 }
