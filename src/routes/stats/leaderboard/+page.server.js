@@ -5,8 +5,10 @@ const flattenStats = (player) => {
     // Initialize statistics variables
     let sp = 0, gp = 0, goals = 0, assists = 0, points = 0,
         wins = 0, losses = 0, goals_allowed = 0, saves = 0,
-        shots = 0, shutouts = 0;
+        shots = 0, shutouts = 0, goaliegp = 0, goaliesp = 0;
     let seasons = [];
+    let goalieseasons = [];
+
 
         if(player.allTimeSkaterStats != null){
             goals = player.allTimeSkaterStats.goals;
@@ -17,6 +19,8 @@ const flattenStats = (player) => {
         }
 
         if(player.allTimeGoalieStats != null){
+            goaliegp = player.allTimeGoalieStats.games_played;
+            goaliesp = player.allTimeGoalieStats.seasons_played;
             wins = player.allTimeGoalieStats.wins;
             losses = player.allTimeGoalieStats.losses;
             goals_allowed = player.allTimeGoalieStats.goals_allowed;
@@ -26,6 +30,7 @@ const flattenStats = (player) => {
         }
         if (Array.isArray(player.game_player_stats)) {
             player.game_player_stats.forEach(game => {
+                
                 goals += game.goals_scored;
                 assists += game.assists;
                 points += game.goals_scored + game.assists;
@@ -40,6 +45,11 @@ const flattenStats = (player) => {
         // Process goalie game stats
         if (Array.isArray(player.game_goalie_stats)) {
             player.game_goalie_stats.forEach(game => {
+                goaliegp += 1;
+                if (!goalieseasons.includes(game.game.season)) {
+                    goaliesp += 1;
+                    goalieseasons.push(game.game.season);
+                }
                 shots += game.shots;
                 goals_allowed += game.goals_allowed;
                 saves += game.saves;
@@ -75,12 +85,12 @@ const flattenStats = (player) => {
     };
 
     const goalieStats = {
-        wins, losses, sp, gp, goals_allowed, saves, shots,
-        shutouts,
-        winpercentage: gp ? parseFloat((wins / gp) * 100).toFixed(2) : '0.00',
+        wins, losses, goals_allowed, saves, shots, 
+        shutouts, gp :goaliegp, sp: goaliesp,
+        winpercentage: goaliegp ? parseFloat((wins / goaliegp) * 100).toFixed(2) : '0.00',
         allTimesavepercentage: shots ? parseFloat((saves / shots) * 100).toFixed(2) : '0.00',
-        spg: gp ? parseFloat(shots / gp).toFixed(2) : '0.00',
-        allTimegaa: gp ? parseFloat(goals_allowed / gp).toFixed(2) : '0.00'
+        spg: goaliegp ? parseFloat(shots / goaliegp).toFixed(2) : '0.00',
+        allTimegaa: goaliegp ? parseFloat(goals_allowed / goaliegp).toFixed(2) : '0.00'
     };
 
     return {
