@@ -14,7 +14,6 @@
   } from "flowbite-svelte";
   import { _processHockeyStats } from "./+page.js";
   import { superForm } from "sveltekit-superforms/client";
-  import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   import AutoComplete from 'simple-svelte-autocomplete';
 
 

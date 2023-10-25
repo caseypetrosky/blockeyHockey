@@ -2,8 +2,7 @@
 <script>
 import { z } from "zod";
 import { superForm } from "sveltekit-superforms/client";
-import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
-  import { A } from "flowbite-svelte";
+
 export let data;
 
 

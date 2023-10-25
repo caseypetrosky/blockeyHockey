@@ -2,28 +2,27 @@
   import { Search, Button } from 'flowbite-svelte'
   import { goto } from '$app/navigation';
 	
-  export let data;
+  let search = '';
 
-let search = '';
-
-const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    try {
-        const response = await fetch(`https://playerdb.co/api/player/minecraft/${search}`);
-        const data = await response.json();
-        
-        const playerId = data.data.player.raw_id;
-        
-        goto(`/stats/${playerId}`);
-        
-    } catch (error) {
-        console.error("An error occurred:", error);
-    }
-search = '';
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+      
+      try {
+          const response = await fetch(`https://playerdb.co/api/player/minecraft/${search}`);
+          const data = await response.json();
+          
+          const playerId = data.data.player.raw_id;
+          
+          goto(`/stats/${playerId}`);
+          
+      } catch (error) {
+          console.error("An error occurred:", error);
+      }
+  search = '';
 };
 
 </script>
+
 <div class="container mx-auto">
   <div class="container py-4 mx-auto text-white tabs ">
     <a href="/stats" class="tab tab-bordered tab-active text-2xl">Player Page Search</a> 

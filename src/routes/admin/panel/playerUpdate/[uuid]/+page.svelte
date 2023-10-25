@@ -1,9 +1,6 @@
 <script>
     import { page } from '$app/stores';
-    import { goto } from '$app/navigation';
-
     import { superForm } from "sveltekit-superforms/client";
-  import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
     import {z} from 'zod';
 
     export let data;
