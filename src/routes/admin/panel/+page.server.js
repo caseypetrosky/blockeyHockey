@@ -188,7 +188,7 @@ export const actions = {
         await prisma.Logs.create({
             data: {
                 type: "newTeam",
-                data: JSON.stringify(form),
+                data: JSON.stringify(teamform),
                 user: {
                     connect : {
                         id: userId,
@@ -232,7 +232,7 @@ export const actions = {
         await prisma.Logs.create({
             data: {
                 type: "newGame",
-                data: JSON.stringify(form),
+                data: JSON.stringify(gameform),
                 user: {
                     connect : {
                         id: userId,
