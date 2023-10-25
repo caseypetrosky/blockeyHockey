@@ -5,11 +5,10 @@
     let savepercentage = 0;
     let gaa = 0;
     
-
     //add regular and playoff ppg to each season
     data.player.seasonsArray.forEach(season => {
         
-        if (season.playoffs.gp == undefined) {
+        if (!season.playoffs.gp) {
             season.playoffs = {
                 player: {
                     gp: 0, goals: 0, assists: 0, points: 0, touches: 0, toi: 0, ppg: "0.00"
@@ -76,7 +75,9 @@
     alltimeGoalie.goals_allowed= 0;
     alltimeGoalie.saves= 0;
 
-    if(!data.player.goalie && data.player.allTimeSkaterStats[0]!=null) {
+    // ... rest of your script ...
+
+    if (data.player.allTimeSkaterStats && data.player.allTimeSkaterStats[0] != null) {
         alltimeSkater = data.player.allTimeSkaterStats[0];
         alltimeSkater.points = alltimeSkater.goals + alltimeSkater.assists;
         ggp = parseFloat(alltimeSkater.goals / alltimeSkater.games_played).toFixed(2);
@@ -86,15 +87,14 @@
         asp = parseFloat(alltimeSkater.assists / alltimeSkater.seasons_played).toFixed(2);
         allTimePPG = parseFloat(alltimeSkater.points / alltimeSkater.games_played).toFixed(2);
     }
-
-    if(data.player.goalie){
+    if (data.player.allTimeGoalieStats && data.player.allTimeGoalieStats[0] != null) {
         alltimeGoalie = data.player.allTimeGoalieStats[0];
-        winpercentage = parseFloat((alltimeGoalie.wins / alltimeGoalie.games_played)*100).toFixed(2);
-        allTimesavepercentage = parseFloat((alltimeGoalie.saves / alltimeGoalie.shots*100)).toFixed(2);
+        winpercentage = parseFloat((alltimeGoalie.wins / alltimeGoalie.games_played) * 100).toFixed(2);
+        allTimesavepercentage = parseFloat((alltimeGoalie.saves / alltimeGoalie.shots * 100)).toFixed(2);
         spg = parseFloat(alltimeGoalie.shots / alltimeGoalie.games_played).toFixed(2);
         allTimegaa = parseFloat(alltimeGoalie.goals_allowed / alltimeGoalie.games_played).toFixed(2);
     }
-
+    
 </script>
 <div class="container mx-auto  mt-10">
     <div class="inline-flex">
