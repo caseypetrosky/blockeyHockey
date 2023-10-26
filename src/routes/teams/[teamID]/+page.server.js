@@ -15,14 +15,18 @@ export const load = async ({ params }) => {
             id: team.leagueId
         }
     });
-    const players = await prisma.player.findMany({
+    const players = await prisma.playerTeam.findMany({
         where: {
             teamId: params.teamID
         },
         include:{
-            game_player_stats: true,
-            game_goalie_stats:true,
-        }
+              player: {
+                include:  {
+                game_player_stats: true,
+                game_goalie_stats:true,
+            }
+
+        }}
     });
     let currentSeason = getSeasonsArray[league.name.toLowerCase()]
     const games = await prisma.games.findMany({
