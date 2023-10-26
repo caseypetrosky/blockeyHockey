@@ -24,12 +24,13 @@ const newPlayerSchema = z.object({
     contractPrice: z.number().min(1500).max(15000),
 });
 const newTeamSchema = z.object({
-    name: z.string().min(3),
+    teamname: z.string(),
+    teamshorthand: z.string(),
     leagueId: z.number(),
     team_owner: z.string().min(3),
     color: z.string().min(3),
-    id: z.string().min(1).max(4),
-    description: z.string()});
+    description: z.string()
+});
 
 
 const newGameScehma = z.object({
@@ -128,6 +129,54 @@ const getUUID = async (username) => {
 
 
 export const actions = {
+    massPlayerInput: async (event) => {
+        const form = await superValidate(event, newPlayerSchema);
+
+        await prisma.Logs.create({
+            data: {
+                type: "massPlayerInput",
+                data: JSON.stringify(form),
+                user: {
+                    connect : {
+                        id: userId,
+                }},
+                date: new Date(),
+
+            },
+            });
+
+        if(!form.valid){
+            return fail(400,{
+                form
+            })
+        }
+        const uuid = await getUUID(form.data.username);
+        if(!uuid){
+            return fail(400,{
+                form
+            })
+        }
+
+        const player = await prisma.player.create({
+            data: {
+                username: form.data.username,
+                uuid: uuid,
+                awards: '',
+                league_roles: '',
+                number: form.data.number,
+                teamId: form.data.teamId,
+                goalie: form.data.goalie,
+                contractTier: form.data.contractType,
+                contractLength: form.data.contractLength,
+                contractPrice: form.data.contractPrice,
+            },
+            });
+        return {
+            player,
+            form
+        }
+
+    },
     newPlayerForm: async (event) => {
         const form = await superValidate(event, newPlayerSchema);
         
@@ -184,6 +233,7 @@ export const actions = {
     },
     newTeamForm: async (event) => {
         const teamform = await superValidate(event, newTeamSchema);
+        console.log(teamform);
        
         await prisma.Logs.create({
             data: {
@@ -200,19 +250,22 @@ export const actions = {
             });
 
         if(!teamform.valid){
-            return fail(400,{
-                teamform
-            })
+            throw error(400, {
+                message: 'Invalid form data',
+                error: teamform.errors,
+            });
         }
-
+        
         const team = await prisma.team.create({
             data: {
-                name: teamform.name,
-                leagueId: teamform.league,
-                team_owner: teamform.team_owner,
-                color: teamform.color,
-                id: teamform.id,
-                description: teamform.description,
+                name: teamform.data.teamname,
+                leagueId: teamform.data.leagueId,
+                team_owner: teamform.data.team_owner,
+                color: teamform.data.color,
+                id: teamform.data.teamshorthand,
+                description: teamform.data.description,
+                championships: '',
+                capSpace: 38000,
 
             },
           });
@@ -244,9 +297,9 @@ export const actions = {
             });
 
         if(!gameform.valid){
-            return fail(400,{
-                gameform
-            })
+            throw error(400, {
+                message: 'Invalid form data'
+            });
         }
         let input = gameform.data.gameTellRaw;
 
