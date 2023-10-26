@@ -100,14 +100,14 @@
 
     <div class="w-full max-w-xs form-control">
         <label for="awards">Player awards</label>
-        <textarea  class="textarea textarea-accent w-full max-w-xs" type="text" name="awards" placeholder="Player Awards" required bind:value={$form.awards}/>
+        <textarea  class="textarea textarea-accent w-full max-w-xs" type="text" name="awards" placeholder="Player Awards" bind:value={$form.awards}/>
         {#if $errors.awards}
           <small class="text-red-500">{$errors.awards}</small>
         {/if}
     </div>
         <div class="w-full max-w-xs form-control">
         <label for="roles">Player roles</label>
-        <textarea  class="textarea textarea-accent w-full max-w-xs" type="text" name="Roles" placeholder="Player Roles" required bind:value={$form.league_roles}/>
+        <textarea  class="textarea textarea-accent w-full max-w-xs" type="text" name="Roles" placeholder="Player Roles" bind:value={$form.league_roles}/>
         {#if $errors.league_roles}
           <small class="text-red-500">{$errors.league_roles}</small>
         {/if}

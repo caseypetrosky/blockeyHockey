@@ -71,7 +71,7 @@ model Team {
 }
 
 model Player {
-  id                 Int                 @id @default(autoincrement())
+  id                 Int                 @id @unique @default(autoincrement())
   uuid               String              @unique
   username           String
   number             Int                 @default(0)

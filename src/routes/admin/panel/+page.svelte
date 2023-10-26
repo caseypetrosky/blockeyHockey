@@ -15,8 +15,7 @@
   import { _processHockeyStats } from "./+page.js";
   import { superForm } from "sveltekit-superforms/client";
   import AutoComplete from 'simple-svelte-autocomplete';
-
-
+  import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   let bhlGoalies = [];
   
 // Define the columns for the player table
@@ -44,17 +43,17 @@
 });
 
   // Define the validation schema for creating a new team
-const newTeamSchema = z.object({
-    name: z.string().min(3),
+  const newTeamSchema = z.object({
+    teamname: z.string(),
+    teamshorthand: z.string(),
     leagueId: z.number(),
     team_owner: z.string().min(3),
     color: z.string().min(3),
-    id: z.string().min(1).max(4),
     description: z.string()
 });
 
 // Define the validation schema for creating a new game
-const newGameScehma = z.object({
+const newGameSchema = z.object({
     gameTellRaw: z.string(),
     leagueId: z.number(),
     isPlayoffs: z.boolean(),
@@ -107,7 +106,7 @@ const newGameScehma = z.object({
   });
 
   // Create a new superform for the new team form
-  const {form:teamform,erors: teamErrors,enhance: teamenhance} = superForm(data.newTeamForm, {
+  const {form:teamForm ,erors: teamErrors,enhance: teamenhance} = superForm(data.newTeamForm, {
     validators: newTeamSchema,
       // Reset the form upon a successful result
     resetForm: true,
@@ -122,7 +121,7 @@ const newGameScehma = z.object({
   // Create a new superform for the new game form
   const{form:gameForm, errors:gameErrors, enhance:gameEnhance} = superForm(data.newGameForm, {
     dataType: 'json',
-    validators: newGameScehma,
+    validators: newGameSchema,
      // Reset the form upon a successful result
      resetForm: true,
     // On ActionResult error, render the nearest +error.svelte page
@@ -206,6 +205,7 @@ const newGameScehma = z.object({
 
 </script>
 
+<SuperDebug data={{$teamForm,$teamErrors}} />
 <div class="container mx-auto mt-4 text-white">
 
 <div class="flex gap-4">
@@ -297,19 +297,10 @@ const newGameScehma = z.object({
       <h3 class="my-4 text-xl font-medium text-gray-900 dark:text-white">
         Create A New Team
       </h3>
-      <div class="form-control w-full max-w-xs">
-        <label class="label text-white" for="teamName">Team Name</label>
-        <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="teamName" placeholder="Team Name" required bind:value={$teamform.name}/>
-        
-      </div>
-      <div class="form-control w-full max-w-xs">
-        <label class="label text-white" for="teamID">Team Shorthand</label>
-        <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="teamID" placeholder="Team Shorthand" required bind:value={$teamform.id}/>
-        
-      </div>
+      
       <div class="w-full max-w-xs">
         <label for="leagueId">Team League</label>
-        <select class="select select-accent w-full max-w-xs" name="leagueId" bind:value={$teamform.leagueId}>
+        <select class="select select-accent w-full max-w-xs" name="leagueId" bind:value={$teamForm.leagueId}>
           {#each leagues as league}
             <option value={league.value}>{league.name}</option>
           {/each}
@@ -317,18 +308,27 @@ const newGameScehma = z.object({
         
       </div>
       <div class="form-control w-full max-w-xs">
+        <label class="label text-white" for="teamname">Team Name</label>
+        <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="teamname" placeholder="Team Name" required bind:value={$teamForm.teamname}/>
+      </div>
+      
+      <div class="form-control w-full max-w-xs">
+        <label class="label text-white" for="teamshorthand">Team Shorthand</label>
+        <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="teamshorthand" placeholder="Team Shorthand" required bind:value={$teamForm.teamshorthand}/>
+      </div>
+      
+      <div class="form-control w-full max-w-xs">
         <label class="label text-white" for="team_owner">Team Owner</label>
-        <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="team_owner" placeholder="Team Owner" required bind:value={$teamform.team_owner}/>
-        
+        <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="team_owner" placeholder="Team Owner" required bind:value={$teamForm.team_owner}/>
       </div>
       <div class="form-control w-full max-w-xs">
         <label class="label text-white" for="color">Team Color Code</label>
-        <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="color" placeholder="#FFFFFF" required bind:value={$teamform.color}/>
+        <input class="input input-bordered input-accent w-full max-w-xs" type="text" name="color" placeholder="#FFFFFF" required bind:value={$teamForm.color}/>
         
       </div>
       <div class="form-control w-full max-w-xs">
         <label class="label text-white" for="description">Team Page Description</label>
-        <textarea  class="textarea textarea-accent w-full max-w-xs" type="text" name="description" placeholder="Description" required bind:value={$teamform.description}/>
+        <textarea  class="textarea textarea-accent w-full max-w-xs" type="text" name="description" placeholder="Description" bind:value={$teamForm.description}/>
         
       </div>
       <button type="submit"  class="btn btn-primary my-4 w-full max-w-xs">Submit New Team</button>
