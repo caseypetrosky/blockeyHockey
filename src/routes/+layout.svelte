@@ -61,6 +61,7 @@
 						<li><a href="https://www.youtube.com/c/blockeysportsnetwork">Youtube</a></li>
 						<li><a href="https://twitter.com/BlockeyHockeyMC">Twitter</a></li>
 						<li><a href="https://discord.com/invite/TWp3vnuuwX">Discord</a></li>
+						<li><a href="https://www.tiktok.com/@blockeyhockey?lang=en">TikTok</a></li>
 					</ul>
 				</li>
 				<li><a href="/stats">Stats</a></li>
@@ -110,6 +111,7 @@
 						<li><a href="https://www.youtube.com/c/blockeysportsnetwork">Youtube</a></li>
 						<li><a href="https://twitter.com/BlockeyHockeyMC">Twitter</a></li>
 						<li><a href="https://discord.com/invite/TWp3vnuuwX">Discord</a></li>
+						<li><a href="https://www.tiktok.com/@blockeyhockey?lang=en">TikTok</a></li>
 					</ul>	
 				</details>
 			</li>
