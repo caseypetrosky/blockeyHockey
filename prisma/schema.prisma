@@ -70,6 +70,7 @@ model Team {
   home_games      games[]           @relation("home_team")
 }
 
+
 model Player {
   id                 Int                 @id @unique @default(autoincrement())
   uuid               String              @unique

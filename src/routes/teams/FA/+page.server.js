@@ -4,11 +4,8 @@ import { getSeasonsArray } from '$lib/currentSeason.js';
 export const load = async ({ params }) => {
     const team = await prisma.team.findUnique({
         where: {
-            id: params.teamID
+            id: "FA"
         },
-        include:{
-            game_team_stats:true
-        }
     });
     const league = await prisma.league.findUnique({
         where: {
@@ -17,12 +14,8 @@ export const load = async ({ params }) => {
     });
     const players = await prisma.player.findMany({
         where: {
-            teamId: params.teamID
+            teamId: 'FA'
         },
-        include:{
-            game_player_stats: true,
-            game_goalie_stats:true,
-        }
     });
     let currentSeason = getSeasonsArray[league.name.toLowerCase()]
     const games = await prisma.games.findMany({
@@ -62,17 +55,6 @@ export const load = async ({ params }) => {
 
     
 
-    if(team.leagueId == 1){
-    let capHit = team.capSpace;
-    let totalSalary = 0;
-
-    players.forEach(player => {
-        capHit -= player.contractPrice;
-        totalSalary += player.contractPrice;
-    });
-    team.capHit = capHit;
-    team.totalSalary = totalSalary;
-}
     
     
     return {
