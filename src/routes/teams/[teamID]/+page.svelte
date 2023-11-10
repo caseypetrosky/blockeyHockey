@@ -31,7 +31,7 @@
 <div class="container mx-auto mt-10">
 
     <div class="inline-flex">
-        <img src={teamImg} alt="team logo" class="h-40 w-40 mr-4">
+        <img src={teamImg} alt="team logo" class="h-44 w-auto mr-4">
         <div>
             <h1 class="my-auto text-4xl">{data.team.name}</h1>
             <h2>Owner: {data.team.team_owner}</h2>
