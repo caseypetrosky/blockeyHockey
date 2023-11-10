@@ -48,8 +48,10 @@
 					<summary>Leagues</summary>
 					<ul class="p-2">
 						<li><a href="/leagues/blockeyLeague">BHL</a></li>
+						<!--
 						<li><a href="/leagues/namhl">NAMHL</a></li>
 						<li><a href="/leagues/jbhl">JBHL</a></li>
+						-->
 					</ul>
 				</li>	
 				
@@ -88,12 +90,14 @@
 						<li>
 							<a href="/leagues/blockeyLeague"> BHL </a>
 						</li>
+						<!--
 						<li>
 							<a href="/leagues/namhl"> NAMHL </a>
 						</li>
 						<li>
 							<a href="/leagues/jbhl"> JBHL </a>
 						</li>
+						-->
 					</ul>	
 				</details>
 			</li>
