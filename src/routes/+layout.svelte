@@ -22,6 +22,8 @@
 		search = '';
     };
 
+	
+
 </script>
 <svelte:head>
   <link rel="icon" type="image/svg" href={myImage} />
@@ -44,16 +46,18 @@
 			>
 
 				<li><a href="/teams">Teams</a></li>
+				<li><a href="/leagues/blockeyLeague">BHL</a></li>
+						<!--
+
 				<li>
 					<summary>Leagues</summary>
 					<ul class="p-2">
 						<li><a href="/leagues/blockeyLeague">BHL</a></li>
-						<!--
 						<li><a href="/leagues/namhl">NAMHL</a></li>
 						<li><a href="/leagues/jbhl">JBHL</a></li>
-						-->
 					</ul>
 				</li>	
+						-->
 				
 				<li>
 					<summary>Social Media</summary>
@@ -83,7 +87,7 @@
 				<a href="/teams"> Teams </a>
 			</li>
 			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-
+<!--
 			<li tabindex="0" class="z-40">
 				<details>
 					<summary>Leagues</summary>
@@ -91,16 +95,19 @@
 						<li>
 							<a href="/leagues/blockeyLeague"> BHL </a>
 						</li>
-						<!--
+						
 						<li>
 							<a href="/leagues/namhl"> NAMHL </a>
 						</li>
 						<li>
 							<a href="/leagues/jbhl"> JBHL </a>
 						</li>
-						-->
+						
 					</ul>	
 				</details>
+			</li>-->
+			<li>
+				<a href="/leagues/blockeyLeague"> BHL </a>
 			</li>
 			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 

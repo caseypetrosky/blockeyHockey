@@ -1,38 +1,80 @@
-<script>
-import { page } from '$app/stores'
-  import { onMount } from 'svelte';
-  import {Tabs, TabItem} from 'flowbite-svelte';
+	<script>
+	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
+	import { Tabs, TabItem } from 'flowbite-svelte';
 
-export let data;
-let array = [...data.player];
+	export let data;
 
-let sortBy = {col:"skaterStats.gp", ascending: false};
+	// Mapping of stat abbreviations to full names
+	const statFullNames = {
+		'goals': 'Goals',
+		'assists': 'Assists',
+		'points': 'Points',
+		'touches': 'Touches',
+		'toi': 'Time On Ice',
+		'gp': 'Games Played',
+		'ppg': 'Points Per Game',
+		'gpg': 'Goals Per Game',
+		'pp15': 'Points Per 15 Minutes',
+		'gp15': 'Goals Per  15 Minutes',
+		'toup15': 'Touches Per 15 Minutes',
+		'toupg': 'Touches Per Game'
+	};
 
-$: sort = (column) => {
-		if (sortBy.col === column) {
-			sortBy.ascending = !sortBy.ascending;
-		} else {
-			sortBy.col = column;
-			sortBy.ascending = true;
-		}
 
-		let sortModifier = sortBy.ascending ? 1 : -1;
+	let array = [...data.player];
 
-		let sort = (a, b) => {
-			const aValue = column.includes('.') ? column.split('.').reduce((obj, key) => obj[key], a) : a[column];
-			const bValue = column.includes('.') ? column.split('.').reduce((obj, key) => obj[key], b) : b[column];
+	let sortBy = {col:"skaterStats.gp", ascending: false};
 
-			return aValue < bValue ? -1 * sortModifier : aValue > bValue ? 1 * sortModifier : 0;
+	$: sort = (column) => {
+			if (sortBy.col === column) {
+				sortBy.ascending = !sortBy.ascending;
+			} else {
+				sortBy.col = column;
+				sortBy.ascending = true;
+			}
+
+			let sortModifier = sortBy.ascending ? 1 : -1;
+
+			let sort = (a, b) => {
+				const aValue = column.includes('.') ? column.split('.').reduce((obj, key) => obj[key], a) : a[column];
+				const bValue = column.includes('.') ? column.split('.').reduce((obj, key) => obj[key], b) : b[column];
+
+				return aValue < bValue ? -1 * sortModifier : aValue > bValue ? 1 * sortModifier : 0;
+			};
+
+			array = array.slice().sort(sort);
 		};
 
-		array = array.slice().sort(sort);
-	};
 	onMount(() => {
-		sort("skaterStats.points");
-		sort("skaterStats.points");
-
+			sort("skaterStats.points");
+			sort("skaterStats.points");
 	});
-  </script>
+
+	function getTopPlayersForStat(players, stat) {
+		return players
+			.sort((a, b) => b.skaterStats[stat] - a.skaterStats[stat])
+			.slice(0, 5)
+			.map((player, index) => ({
+				username: player.username,
+				uuid: player.uuid,
+				stat: player.skaterStats[stat],
+				rank: index + 1 // Add rank
+			}));
+	}
+		// Assuming all players have the same stat fields in 'skaterStats'
+	let statKeys = Object.keys(data.player[0].skaterStats);
+
+		// Object to store the top 5 players for each stat
+	let topPlayers = {};
+
+	statKeys.forEach(stat => {
+		topPlayers[stat] = getTopPlayersForStat(data.player, stat);
+	});
+
+		// Wrapping the result in an object named 'players'
+	let result = { players: topPlayers };
+</script>
 
   <div class="container py-4 mx-auto text-white tabs ">
 	<a href="/leagues/blockeyLeague" class="tab tab-bordered text-2xl">League Info</a> 
@@ -130,6 +172,73 @@ $: sort = (column) => {
 					{/each}
 				</tbody>
 			</table>
+		</div>
+	</TabItem>
+	<TabItem title="Stats Sheet Display">
+		<style>
+			.stats-container {
+			  display: grid;
+			  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			  gap: 16px;
+			  padding: 16px;
+			}
+		  
+			.stat-category {
+			  border: 1px solid #ccc;
+			  border-radius: 8px;
+			  padding: 16px;
+			}
+		  
+			@media (max-width: 768px) {
+			  .stats-container {
+				grid-template-columns: 1fr;
+			  }
+			}
+		  
+			h2 {
+			  font-size: 1.5rem;
+			  margin-bottom: 1rem;
+			}
+		  
+			ul {
+			  list-style: none;
+			  padding: 0;
+			  margin: 0;
+			}
+		  
+			.coolist {
+			  display: flex;
+			  justify-content: space-between;
+			  padding: 8px 0;
+			  border-bottom: 1px solid #eee;
+			  color: inherit; /* Optional: to inherit text color */
+			text-decoration: none; /* Optional: to remove underline */
+			transition: color 0.3s ease; /* Smooth transition for color change */
+			}
+			.coolist a:hover {
+				/* Style for hover state */
+				color: #777; /* Darker color on hover */
+			}
+				
+			li:last-child {
+			  border-bottom: none;
+			}
+		  </style>
+		  
+		  <div class="stats-container">
+			{#each Object.entries(result.players) as [category, players]}
+			<div class="stat-category">
+				<h2>{statFullNames[category]}</h2> <!-- Updated to show full stat name -->
+				<ul>
+					{#each players as player}
+					<li class="coolist">
+						<span>{player.rank}. <a href="/stats/{player.uuid}">{player.username}</a></span>
+						<strong>{player.stat}</strong>
+					</li>
+					{/each}
+				</ul>
+			</div>
+			{/each}
 		</div>
 	</TabItem>
 </Tabs>

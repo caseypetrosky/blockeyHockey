@@ -36,14 +36,14 @@
 <div class="stats mx-auto shadow">
 	<div class="stat">
 		<div class="stat-title">Since 2019</div>
-		<div class="stat-value">18 Seasons</div>
+		<div class="stat-value">20 Seasons</div>
 		<div class="stat-desc" />
 	</div>
 
 	<div class="stat">
 		<div class="stat-figure text-secondary" />
 		<div class="stat-title">Discord Members</div>
-		<div class="stat-value">2000+</div>
+		<div class="stat-value">3000+</div>
 	</div>
 
 	<div class="stat">
