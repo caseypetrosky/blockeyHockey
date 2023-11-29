@@ -118,7 +118,7 @@ console.log(data.player);
 <Tabs style="pill" class="mt-4 text-white ">
 	<TabItem open  title="Skater Stats Leaderboard">
 		<div class="overflow-x-auto  text-white">
-			<h1 class="text-3xl font-bold text-center">S19 Skater Stats Leaderboard</h1>
+			<h1 class="text-3xl font-bold text-center">Skater Stats Leaderboard</h1>
 			<table class="table table-">
 				<thead>
 					<tr>
@@ -167,7 +167,7 @@ console.log(data.player);
 	</TabItem>
 	<TabItem title="Goalie Stats Leaderboard">
 		<div class="overflow-x-auto container mx-auto text-white">
-			<h1 class="text-3xl font-bold text-center">S19 Goalie Stats Leaderboard</h1>
+			<h1 class="text-3xl font-bold text-center">Goalie Stats Leaderboard</h1>
 			<table class="table">
 				<thead>
 					<tr>
