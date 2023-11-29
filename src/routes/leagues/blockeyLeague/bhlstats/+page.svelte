@@ -256,6 +256,7 @@ console.log(data.player);
 			  border-bottom: none;
 			}
 		  </style>
+		<h1 class="text-3xl font-bold text-center">Skater Leaderboard</h1>
 		  
 		  <div class="stats-container">
 			{#each Object.entries(result.players) as [category, players]}
@@ -272,7 +273,7 @@ console.log(data.player);
 			</div>
 			{/each}
 		</div>
-		<h1 class="text-3xl font-bold text-center">Goalie Stats</h1>
+		<h1 class="text-3xl font-bold text-center">Goalie Leaderboard</h1>
 		<div class="stats-container">
 			{#each Object.entries(result.goalies) as [category, goalies]}
 			<div class="stat-category">
