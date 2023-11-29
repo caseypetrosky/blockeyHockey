@@ -4,7 +4,7 @@
 	import { Tabs, TabItem } from 'flowbite-svelte';
 
 	export let data;
-
+console.log(data.player);
 	// Mapping of stat abbreviations to full names
 	const statFullNames = {
 		'goals': 'Goals',
@@ -20,6 +20,17 @@
 		'toup15': 'Touches Per 15 Minutes',
 		'toupg': 'Touches Per Game'
 	};
+	const goalieStatFullNames = {
+    'gaa': 'Goals Against Average',
+    'goals_allowed': 'Goals Allowed',
+    'gp': 'Games Played',
+    'savepercentage': 'Save Percentage',
+    'saves': 'Saves',
+    'shots': 'Shots Against',
+    'shutouts': 'Shutouts',
+    'toi': 'Time On Ice',
+    'touches': 'Touches'
+};
 
 
 	let array = [...data.player];
@@ -62,6 +73,18 @@
 				rank: index + 1 // Add rank
 			}));
 	}
+	function getTopGoaliesForStat(goalies, stat) {
+    return goalies
+        .sort((a, b) => b.goalieStats[stat] - a.goalieStats[stat])
+        .slice(0, 5)
+        .map((goalie, index) => ({
+            username: goalie.username,
+            uuid: goalie.uuid,
+            stat: goalie.goalieStats[stat],
+            rank: index + 1 // Add rank
+        }));
+}
+
 		// Assuming all players have the same stat fields in 'skaterStats'
 	let statKeys = Object.keys(data.player[0].skaterStats);
 
@@ -71,9 +94,18 @@
 	statKeys.forEach(stat => {
 		topPlayers[stat] = getTopPlayersForStat(data.player, stat);
 	});
+	let goalieArray = data.player.filter(player => player.goalie); // Replace with your actual goalie data structure
 
 		// Wrapping the result in an object named 'players'
 	let result = { players: topPlayers };
+	let topGoalies = {};
+
+	Object.keys(goalieStatFullNames).forEach(stat => {
+		topGoalies[stat] = getTopGoaliesForStat(goalieArray, stat);
+	});
+
+	// Add the topGoalies to the result object
+	result.goalies = topGoalies;
 </script>
 
   <div class="container py-4 mx-auto text-white tabs ">
@@ -240,6 +272,23 @@
 			</div>
 			{/each}
 		</div>
+		<h1 class="text-3xl font-bold text-center">Goalie Stats</h1>
+		<div class="stats-container">
+			{#each Object.entries(result.goalies) as [category, goalies]}
+			<div class="stat-category">
+				<h2>{goalieStatFullNames[category]}</h2>
+				<ul>
+					{#each goalies as goalie}
+					<li class="coolist">
+						<span>{goalie.rank}. <a href="/stats/{goalie.uuid}">{goalie.username}</a></span>
+						<strong>{goalie.stat}</strong>
+					</li>
+					{/each}
+				</ul>
+			</div>
+			{/each}
+		</div>
+		
 	</TabItem>
 </Tabs>
 </div>
