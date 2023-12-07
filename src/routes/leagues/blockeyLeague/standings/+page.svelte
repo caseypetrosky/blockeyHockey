@@ -21,7 +21,7 @@
       gamesPlayed++;
       if(data.team[i].game_team_stats[j].goals_scored > data.team[i].game_team_stats[j].goals_allowed){
         wins++;
-        points += 3;
+        points += 2;
       }
       else if(data.team[i].game_team_stats[j].goals_scored < data.team[i].game_team_stats[j].goals_allowed && !data.team[i].game_team_stats[j].is_overtime){
         losses++;
