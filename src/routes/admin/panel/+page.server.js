@@ -279,7 +279,7 @@ export const actions = {
     },
     
     newGameForm: async (event) => {
-        
+        console.log(event);
         const gameform = await superValidate(event, newGameScehma);
 
         await prisma.Logs.create({
