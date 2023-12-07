@@ -5,7 +5,7 @@ import { boolean, date, z } from 'zod';
 import { auth } from "$lib/server/lucia";
 import { error } from '@sveltejs/kit'
 //CHANGE THIS EACH SEASON!!!!!!
-let defaultBHLSeason = "BHLS19";
+let defaultBHLSeason = "BHLS20";
 let defaultNAMHLSeason = "NAMHLS8";
 let defaultJBHLSeason = "JBHLS12";
 
@@ -279,7 +279,7 @@ export const actions = {
     },
     
     newGameForm: async (event) => {
-        console.log(event);
+        
         const gameform = await superValidate(event, newGameScehma);
 
         await prisma.Logs.create({
@@ -303,6 +303,7 @@ export const actions = {
         }
         let input = gameform.data.gameTellRaw;
 
+        
 
         const titleRegex =  /----- BLOCKEY HOCKEY STATISTICS -----/;
         const mainRegex = /vvv ([A-Z]{3}) @ ([A-Z]{3}) on (\d{4}-\d{2}-\d{2}) - (\d{2}:\d{2}\w{3}) vvv/g;
@@ -318,8 +319,7 @@ export const actions = {
         let matchInf={};
         input = input.replace(mainRegex, "");
         
-
-        
+       
         const parts = input.split('|');
 
         let homeTeam = parts[0].toString();
@@ -339,6 +339,9 @@ export const actions = {
         homeTeamReturn.shots = homeTeamStats[6];
         homeTeamReturn.players = [];
         const homeTeamPlayers = [...homeTeam.matchAll(playerRegex)];
+
+        
+        
         for (const homeTeamPlayer of homeTeamPlayers) {
             let playerUUID = homeTeamPlayer[1];
             const goals = homeTeamPlayer[2];
@@ -389,26 +392,35 @@ export const actions = {
         };
         
         // Existing code to get the player ID based on UUID
-        const getPlayerId = async (uuid) => {
-            const player = await prisma.player.findUnique({
-                where: {
-                    uuid: uuid,
-                },
-                select: {
-                    id: true,
-                },
-            });
-            return player.id
+        const getPlayerId = async (uuidInput) => {
+            try {
+        
+                // Fetch the player
+                const player = await prisma.player.findUnique({
+                    where: { uuid: uuidInput },
+                });
+        
+                return player ? player.id : null;
+            } catch (error) {
+                console.error("Error in getPlayerId:", error);
+                // Optionally, log the error in your logs database
+                // ...
+                throw error; // Rethrow the error for further handling
+            }
         };
+        
+       
         // Use a for...of loop to add player IDs to homeTeamReturn.players
         for (const player of homeTeamReturn.players) {
             player.playerId = await getPlayerId(player.playerUUID);
         }
-
+       
         // Use a for...of loop to add player IDs to awayTeamReturn.players
         for (const player of awayTeamReturn.players) {
             player.playerId = await getPlayerId(player.playerUUID);
         }
+      
+       
 
 
          matchInf = {
@@ -418,6 +430,7 @@ export const actions = {
             time: null,   
         };
         
+       
 
         if(homeTeamReturn.overtime == true || awayTeamReturn.overtime == true){
             matchInf.overtime = true;
@@ -425,7 +438,7 @@ export const actions = {
         else{
             matchInf.overtime = false;
         }
-
+        
         matchInf.leagueId = gameform.data.leagueId;
 
         if(gameform.data.leagueId == 1){
@@ -440,7 +453,7 @@ export const actions = {
         else{
             matchInf.seasonId = null;
         }
-    
+        
         let goalieData = [];
 
         goalieData.push(gameform.data.homeTeamGoalie1);
@@ -485,9 +498,11 @@ export const actions = {
 
         
 
-        
+      
 
-        try {await prisma.games.create({
+     
+        try {
+            const createdGame = await prisma.games.create({
             data:{
             date: matchInf.date,
             is_playoff: gameform.data.isPlayoffs,
@@ -559,17 +574,48 @@ export const actions = {
             })),
             },
             
-        }});
+        }
+    });
+    await prisma.Logs.create({
+        data: {
+            type: "SuccesfulNewGame",
+            data: JSON.stringify(createdGame),
+            user: {
+                connect : {
+                    id: userId,
+            }},
+            
+            date: new Date(),
+
+        },
+        });
+    console.log("Game created successfully:", createdGame);
+} catch (error) {
+    await prisma.Logs.create({
+        data: {
+            type: "ErrorOnnewGame",
+            data: JSON.stringify(error),
+            user: {
+                connect : {
+                    id: userId,
+            }},
+            
+            date: new Date(),
+
+        },
+        });
+
+    console.error("Error creating game:", error);
+    // Handle the error appropriately
+    // Possibly re-throw or return a specific response
+}
 
 
         
         return {
             gameform
         }
-    } catch (error) {
-        console.error("An error occurred:", error);
-        return null;
-    }
+    
     },
    
 }

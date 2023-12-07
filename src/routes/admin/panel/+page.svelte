@@ -55,7 +55,7 @@
 // Define the validation schema for creating a new game
 const newGameSchema = z.object({
     gameTellRaw: z.string(),
-    leagueId: z.number(),
+    leagueId: z.number().default(1),
     isPlayoffs: z.boolean(),
     homeTeamGoalie1: z.object({
       saves: z.number(),
