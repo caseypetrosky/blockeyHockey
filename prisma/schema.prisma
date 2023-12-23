@@ -83,6 +83,7 @@ model Player {
   contractTier       String              @default("Amateur")
   contractLength     Int                 @default(1)
   contractPrice      Int                 @default(1500)
+  rfa               Boolean             @default(false)
   team               Team                @relation(fields: [teamId], references: [id])
   allTimeGoalieStats allTimeGoalieStats?
   allTimeSkaterStats allTimeSkaterStats?

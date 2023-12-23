@@ -72,11 +72,18 @@ gaa = gaa.toFixed(2);
         <div class="tooltip" data-tip="points">
             <p class="text-xs">PTS: {points}</p>
         </div>
+        
+        
     </div>
     {/if}
         <h2>Contract</h2>
         <h2 class="text-xs">{player.contractTier}</h2>
         <h2 class="text-xs">${player.contractPrice}</h2>
         <h2 class="text-xs" >{player.contractLength} Season(s)</h2>
+        {#if player.rfa}
+            <div class="tooltip" data-tip="restriced free agent">
+                <p class="text-xs">✅RFA</p>
+            </div>
+        {/if}
         
 </div>

@@ -15,6 +15,7 @@ const playerSchema = z.object({
     contractTier: z.enum(['Pro', 'Superstar', 'Amateur']),
     contractLength: z.number().min(1).max(3),
     contractPrice: z.number().min(1500).max(15000),
+    rfa: z.boolean(),
 });
 
 let userId;
@@ -90,6 +91,7 @@ export const actions = {
                 contractTier: form.data.contractTier,
                 contractLength: form.data.contractLength,
                 contractPrice: form.data.contractPrice,
+                rfa: form.data.rfa,
             }
         })
 

@@ -154,12 +154,7 @@ const newGameSchema = z.object({
   //select goalies in the data.goalies array that are in the BHL
 
   // Contract select
-  let contractType;
-  let contractTypes = [
-    { value: "Superstar", name: "Superstar" },
-    { value: "Pro", name: "Pro" },
-    { value: "Amateur", name: "Amateur" },
-  ];
+  
   let contractLength;
   let lengths = [
     { value:1, name: "1 season" },
@@ -271,9 +266,11 @@ const newGameSchema = z.object({
         <div class="w-full max-w-xs">
           <label for="contractType">Contract Type</label>
           <select class="select select-accent w-full max-w-xs" name="contractType" bind:value={$form.contractType}>
-            {#each contractTypes as contractType}
-              <option value={contractType.value}>{contractType.name}</option>
-            {/each}
+            
+              <option value="Amateur">Amateur</option>
+              <option value="Superstar">Superstar</option>
+              <option value="Pro">Pro</option>
+              
           </select>
           {#if $errors.contractType}
                   <small class="text-red-500">{$errors.contractType}</small>

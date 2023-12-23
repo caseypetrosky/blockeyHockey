@@ -394,12 +394,16 @@ export const actions = {
         // Existing code to get the player ID based on UUID
         const getPlayerId = async (uuidInput) => {
             try {
-        
                 // Fetch the player
+                //if the player is not found, return null
+                
                 const player = await prisma.player.findUnique({
-                    where: { uuid: uuidInput },
+                    where: {
+                        uuid: uuidInput,
+                    },
                 });
-        
+                
+                
                 return player ? player.id : null;
             } catch (error) {
                 console.error("Error in getPlayerId:", error);

@@ -16,6 +16,7 @@
     contractTier: z.enum(['Pro', 'Superstar', 'Amateur']),
     contractLength: z.number().min(1).max(3),
     contractPrice: z.number().min(1500).max(15000),
+    rfa: z.boolean(),
 });
 
 
@@ -143,6 +144,16 @@
                 <small class="text-red-500">{$errors.contractLength}</small>
           {/if}
       </div>
+      <div class="w-full max-w-xs form-control">
+        <label class="label text-white cursor-pointer" for="rfa">
+          <span class="label-text">Is this player a RFA?</span> 
+          <input name="rfa" type="checkbox" class="checkbox" bind:checked={$form.rfa}/>
+        </label>
+        {#if $errors.rfa}
+          <small class="text-red-500">{$errors.rfa}</small>
+        {/if}
+        </div>
+        
       
       <button type="submit"  class="btn btn-primary my-4 w-full max-w-xs">Submit Edits</button>
 </form>
