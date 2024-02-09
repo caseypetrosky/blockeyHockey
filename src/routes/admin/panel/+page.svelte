@@ -167,6 +167,7 @@ const newGameSchema = z.object({
     { value:1, name: "BHL" },
     { value:2, name: "NAMHL" },
     { value:3, name: "JBHL" },
+    { value:4, name: "BHCL"}
   ];
   let gameLeague;
 

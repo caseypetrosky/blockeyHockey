@@ -102,16 +102,11 @@
         <div>
             <h1 class="my-auto text-4xl">{data.player.username}</h1>
             <a class="hover:text-secondary-focus"href="../teams/{data.player.teamId}">Team: {data.player.team.name}</a>
-            {#if data.player.league_roles != null}           
+            {#if data.player.league_roles != ""}           
              <h2>Roles: {data.player.league_roles}</h2>
             {/if}
             <h2>Number: {data.player.number}</h2>
-            <h2>Current Contract Info</h2>
-            <hr class="border-2 " style="border-color: {data.player.team.color}">
-            <p class="text-xs">Contract Type: {data.player.contractTier}</p>
-            <p class="text-xs">Contract Price: ${data.player.contractPrice}</p>
-            <p class="text-xs">Contract Length: {data.player.contractLength}</p>
-            
+           
         </div>
     </div>  
 
@@ -126,7 +121,7 @@
 <Tabs style="pill" class="mt-4 text-white">
         
     <TabItem open class="text-white">
-        <span slot="title">Seasonal League Stats</span>
+        <span slot="title">BHCL Stats</span>
 
         <!-- Nested Tabs for Regular Season and Playoffs -->
         <Tabs style="pill" class="mt-4 text-white">
@@ -256,7 +251,7 @@
                     {/if}
                     {#if data.player.goalie}
                     <div class="p-8">
-                        <h2 class="text-2xl">S19 Goalie Stats</h2>
+                        <h2 class="text-2xl">BHCL Goalie Stats</h2>
                         <hr class="border-2 w-1/4 mb-4" style="border-color: {data.player.team.color}">
 
                             <div class="overflow-x-auto">
@@ -296,87 +291,6 @@
             </TabItem>
 
         </Tabs>
-
-    </TabItem>
-
-    <TabItem >
-        <span slot="title">All Time Stats</span>
-        {#if !data.player.goalie}
-        <div class="p-8">
-            <h2 class="text-2xl mt-4">All time Career Stats s1-s18</h2>
-            <hr class="border-2 w-1/4" style="border-color: {data.player.team.color}">
-            <table>
-                <tr class="text-sm font-medium text-left" style="border-bottom: 2px solid {data.player.team.color};">
-                    <th class="px-4 py-2">Seasons Played</th>
-                    <th class="px-4 py-2">Games Played</th>
-                    <th class="px-4 py-2">Goals</th>
-                    <th class="px-4 py-2">Assists</th>
-                    <th class="px-4 py-2">Points</th>
-                    <th class="px-4 py-2">Goals Per Game</th>
-                    <th class="px-4 py-2">Assists Per Game</th>
-                    <th class="px-4 py-2">Points Per Game</th>
-                    <th class="px-4 py-2">Goals Per Season</th>
-                    <th class="px-4 py-2">Assists Per Season</th>
-                    <th class="px-4 py-2">Points Per Season</th>
-                </tr> 
-                <tbody> 
-                    <td class="px-4 py-2">{alltimeSkater.seasons_played}</td>
-                    <td class="px-4 py-2">{alltimeSkater.games_played}</td>
-                    <td class="px-4 py-2">{alltimeSkater.goals}</td>
-                    <td class="px-4 py-2">{alltimeSkater.assists}</td>
-                    <td class="px-4 py-2">{alltimeSkater.points}</td>
-                    <td class="px-4 py-2">{ggp}</td>
-                    <td class="px-4 py-2">{agp}</td>
-                    <td class="px-4 py-2">{allTimePPG}</td>
-                    <td class="px-4 py-2">{gsp}</td>
-                    <td class="px-4 py-2">{asp}</td>
-                    <td class="px-4 py-2">{psp}</td>
-                </tbody>
-            </table>
-         
-        </div>
- 
-        {/if}
-        {#if data.player.goalie}
-        <div class="p-8">
-            <h2 class="text-2xl mt-4">All time Goalie Stats s1-s18</h2>
-            <hr class="border-2 w-1/4" style="border-color: {data.player.team.color}">
-            <table>
-                <tr class="text-sm font-medium text-left" style="border-bottom: 2px solid {data.player.team.color};">
-                    <th class="px-4 py-2">Seasons Played</th>
-                    <th class="px-4 py-2">Games Played</th>
-                    <th class="px-4 py-2">Wins</th>
-                    <th class="px-4 py-2">Losses</th>
-                    <th class="px-4 py-2">Win %</th>
-                    <th class="px-4 py-2">Shutouts</th>
-                    <th class="px-4 py-2">Shots Faced</th>
-                    <th class="px-4 py-2">Goals Allowed</th>
-                    <th class="px-4 py-2">Saves</th>
-                    <th class="px-4 py-2">Save %</th>
-                    <th class="px-4 py-2">Shots Per Game</th>
-                    <th class="px-4 py-2">Goals Against Average</th>
-
-                </tr> 
-                <tbody> 
-                    <td class="px-4 py-2">{alltimeGoalie.seasons_played}</td>
-                    <td class="px-4 py-2">{alltimeGoalie.games_played}</td>
-                    <td class="px-4 py-2">{alltimeGoalie.wins}</td>
-                    <td class="px-4 py-2">{alltimeGoalie.losses}</td>
-                    <td class="px-4 py-2">{winpercentage}%</td>
-                    <td class="px-4 py-2">{alltimeGoalie.shutouts}</td>
-                    <td class="px-4 py-2">{alltimeGoalie.shots}</td>
-                    <td class="px-4 py-2">{alltimeGoalie.goals_allowed}</td>
-                    <td class="px-4 py-2">{alltimeGoalie.saves}</td>
-                    <td class="px-4 py-2">{allTimesavepercentage}%</td>
-                    <td class="px-4 py-2">{spg}</td>
-                    <td class="px-4 py-2">{allTimegaa}</td>
-                </tbody>
-            </table>
-            
-        </div>
-        
-        
-        {/if}
 
     </TabItem>
 

@@ -88,7 +88,7 @@ export const load = async ({}) => {
         where: {
             team: {
                 league: {
-                    id: 1,
+                    id: 4,
                 }
             }
         },

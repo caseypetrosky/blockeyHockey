@@ -5,7 +5,7 @@
 <div class="hero bg-base-200">
 	<div class=" hero-content text-center">
 		<div class="max-w-md">
-			<h1 class="text-s font-bold md:text-lg lg:text-5xl">Welcome to the Blockey Hockey League</h1>
+			<h1 class="text-s font-bold md:text-lg lg:text-5xl">Welcome to the Blockey Hockey Creator League</h1>
 			<p class="py-6 text-xs md:text-base lg:text-xl">The Premier Minecraft Hockey Experience.</p>
 		</div>
 	</div>
