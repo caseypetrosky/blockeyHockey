@@ -26,7 +26,7 @@
 <div class="container mx-auto">
   <div class="container py-4 mx-auto text-white tabs ">
     <a href="/stats" class="tab tab-bordered tab-active text-2xl">Player Page Search</a> 
-    <a href="/stats/leaderboard" class="tab tab-bordered text-2xl ">All time leaderboards</a> 
+    <a href="/leagues/blockeyLeague/bhlstats" class="tab tab-bordered text-2xl ">Leaderboard</a> 
   </div>
 <form class="flex gap-2 " on:submit={handleSubmit}>
   

@@ -10,7 +10,7 @@
     <div class="hero bg-cover bg-center h-96" >
       <div class="flex items-center justify-center h-full w-full bg-opacity-50 bg-black">
         <div class="text-center">
-          <h1 class="text-4xl font-bold">Blockey Hockey League</h1>
+          <h1 class="text-4xl font-bold">Blockey Hockey Creator League</h1>
           <p class="text-lg mt-2">The highest tier of Blockey Hockey</p>
         </div>
       </div>
@@ -25,11 +25,19 @@
 
     </section>
     
+    <section class="mt-8">
+      <h2 class="text-2xl font-bold mb-4">This Season's Special Edition</h2>
+      <p class="text-lg">This year, we're thrilled to announce a special one-off season that promises to elevate the excitement to new heights. For the first time, we're bringing together 8 teams, each owned by some of the biggest Minecraft creators in the world. </p>
+      <p class="text-lg mt-2">This unique blend of creativity and competition is set to create an unforgettable season, full of new strategies, ups and downs, and an exciting fan experiences. Join us as these influential figures bring their passion for Minecraft and sportsmanship to the ice, crafting a season like no other.</p>
+
+    </section>
 
     <section class="mt-8">
       <h2 class="text-2xl font-bold mb-4">Teams</h2>
-      <p class="text-lg">Meet the heart and soul of the BHL: our teams! Comprising 10 fiercely competitive teams across 2 divisions, each team brings unique flair, strategy, and skill to the ice. From hometown heroes to rising stars, our league is a melting pot of talent from around the blockey world.</p>
-      <p class="text-lg mt-2">Dive deeper into each team's history, star players, and season highlights. Who will you root for in the race for the championship?</p>
+      <p class="text-lg">At the heart of the BHL are our teams. In our regular seasons, we feature 10 dynamic teams spread across 2 divisions, each with its own unique identity, style, and roster of talent. From local legends to international stars, our league is a diverse showcase of the best in blockey hockey.
+
+        As we embark on this special season, you can see our 8 participating teams. Discover the history, the star players, and the unique flair each team brings to the ice. With the stakes higher than ever, which team will you support on their journey to lift the championship trophy?</p>
+
        <a href="/teams" class="btn bg-primary m-2">View Teams</a>
     </section>
     
@@ -37,7 +45,7 @@
 
     <section class="mt-8">
       <h2 class="text-2xl font-bold mb-4">Schedule</h2>
-      <p class="text-lg">Stay up to date with the latest matches and game schedules in the Blockey Hockey League. All scheduled games and reschedules can be found in the discord servers.</p>
+      <p class="text-lg">Stay up to date with the latest matches and game schedules in the Blockey Hockey Creator League. All scheduled games and reschedules can be found in the discord servers.</p>
     </section>
 
     <section class="mt-8">
@@ -151,8 +159,22 @@
       <p class="text-lg">Season 18 Champion - <strong>Vancouver Outlaws</strong> <br>
         3-2 series win over Boston Grizzlies<br>
       Conn Smythe Winner: <strong>Annoy_d</strong> </p>
+    </div>
+    <div>
+        <h1 class="text-2xl font-bold mb-4 mt-8">Season 19</h1>
+          <p class="text-lg">Season 19 Champion - <strong><a class="hover:text-gray-400" href="../teams/BOS">Boston Grizzlies</a></strong> <br>
+            3-0 series win over Houston Bandits<br>
+          Conn Smythe Winner: <strong>Youppi </strong> </p>
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold mb-4 mt-8">Season 20</h1>
+        <p class="text-lg">Season 20 Champion - <strong><p>Philadelphia Freedom</p></strong> <br>
+          3-0 series win over Seattle Golden Eagles<br>
+        Conn Smythe Winner: <strong>Penley</strong> </p>
+  </div>
   </section>
   </div>
+  
 
 
 

@@ -1,6 +1,6 @@
 <script>
 	import '../app.postcss';
-    let myImage = '/bhl.png';
+    let myImage = '/BHCL.png';
 	import { goto } from '$app/navigation';
 	export let data;
 	
@@ -46,7 +46,7 @@
 			>
 
 				<li><a href="/teams">Teams</a></li>
-				<li><a href="/leagues/blockeyLeague">BHL</a></li>
+				<li><a href="/leagues/blockeyLeague">BHCL</a></li>
 						<!--
 
 				<li>
@@ -73,8 +73,8 @@
 			</ul>
 		</div>
 		<a class="btn-ghost btn" href="/"
-			><img src={myImage} class="h-12 w-12 object-contain" alt="Blockey Hockey League Logo" />
-			<h1 class="hidden text-xl normal-case lg:flex">Blockey Hockey League</h1></a
+			><img src={myImage} class="h-12 w-12 object-contain" alt="Blockey Hockey Creator League Logo" />
+			<h1 class="hidden text-xl normal-case lg:flex">Blockey Hockey Creator League</h1></a
 		>
 	</div>
 
@@ -107,7 +107,7 @@
 				</details>
 			</li>-->
 			<li>
-				<a href="/leagues/blockeyLeague"> BHL </a>
+				<a href="/leagues/blockeyLeague"> BHCL </a>
 			</li>
 			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 
