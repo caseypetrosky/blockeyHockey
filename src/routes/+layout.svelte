@@ -84,7 +84,7 @@
 		<ul class="menu menu-horizontal tabs tabs-boxed px-1">
 			
 			<li>
-				<a href="/teams"> Teams </a>
+				<a href="/teams"> Teams</a>
 			</li>
 			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 <!--
