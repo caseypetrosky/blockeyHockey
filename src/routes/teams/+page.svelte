@@ -2,7 +2,6 @@
   import { Avatar } from "flowbite-svelte";
     export let data;
     
-  console.log(data.teams)
    </script>
    
    <div class="container mx-auto mt-10">

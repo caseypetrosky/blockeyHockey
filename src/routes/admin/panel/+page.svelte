@@ -58,6 +58,7 @@ const newGameSchema = z.object({
     leagueId: z.number().default(1),
     isPlayoffs: z.boolean(),
     homeTeamGoalie1: z.object({
+      username: z.string(),
       saves: z.number(),
       shotsAgainst: z.number(),
     }),
@@ -164,9 +165,6 @@ const newGameSchema = z.object({
   // Team League
   let teamLeague;
   let leagues = [
-    { value:1, name: "BHL" },
-    { value:2, name: "NAMHL" },
-    { value:3, name: "JBHL" },
     { value:4, name: "BHCL"}
   ];
   let gameLeague;
@@ -202,6 +200,8 @@ const newGameSchema = z.object({
 </script>
 
 <SuperDebug data={{$teamForm,$teamErrors}} />
+
+<SuperDebug data={{$gameForm,$gameErrors}} />
 <div class="container mx-auto mt-4 text-white">
 
 <div class="flex gap-4">

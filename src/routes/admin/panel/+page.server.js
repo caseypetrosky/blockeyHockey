@@ -8,6 +8,7 @@ import { error } from '@sveltejs/kit'
 let defaultBHLSeason = "BHLS20";
 let defaultNAMHLSeason = "NAMHLS8";
 let defaultJBHLSeason = "JBHLS12";
+let defaultBHCLSeason = "BHCL";
 
 
 let session;
@@ -298,7 +299,7 @@ export const actions = {
 
         if(!gameform.valid){
             throw error(400, {
-                message: 'Invalid form data'
+                message: 'Invalid form data'+ JSON.stringify(gameform.errors),
             });
         }
         let input = gameform.data.gameTellRaw;
@@ -453,6 +454,9 @@ export const actions = {
         }
         else if(gameform.data.leagueId == 3){
             matchInf.seasonId = defaultJBHLSeason;
+        }
+        else if(gameform.data.leagueId == 4){
+            matchInf.seasonId = defaultBHCLSeason;
         }
         else{
             matchInf.seasonId = null;
