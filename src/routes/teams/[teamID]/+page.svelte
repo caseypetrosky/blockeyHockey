@@ -136,7 +136,6 @@
         {/each}
     </div>
     </div>
-    <pre>{JSON.stringify(data, null, 2)}</pre>
 <!--
 <img src={rinkImg}>
 -->
