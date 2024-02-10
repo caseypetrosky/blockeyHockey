@@ -2,7 +2,6 @@
 	import CutePlayerDisp from '$lib/cutePlayerDisp.svelte';
 	import BHLCutePlayerDisp from '$lib/bhlcutePlayerDisp.svelte';
 
-    import {page} from '$app/stores';
     export let data;
     let teamImg = `/teamlogos/${data.team.id}.png`;
     let rinkImg = `/src/static/logos/${data.team.id}rink.png`
@@ -25,6 +24,7 @@
             otLosses++;
         }
     }
+    console.log(data.games);
 </script>
 
 
@@ -74,7 +74,8 @@
     <h2 class="text-2xl mt-4">Recent games (Oldest To Newest)</h2>
     <hr class="border-2 w-1/4" style="border-color: {teamColor}">
         <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
-    {#each data.games as game}
+    
+    {#each data.games as game, i}
         <div class="flex gap-2 border-2 max-w-xs m-2 p-2" style="border-color:{teamColor}">
             {#if game.home_teamId == data.team.id}
                 <div>
@@ -84,9 +85,9 @@
                     {:else}
                         <p class=" ">Regular Season Game</p>
                     {/if}
-                    {#if game.home_team.game_team_stats[0].goals_scored > game.home_team.game_team_stats[0].goals_allowed}
+                    {#if game.home_team.game_team_stats[i].goals_scored > game.home_team.game_team_stats[i].goals_allowed}
                         <p class="text-xl text-green-500">Win</p>
-                    {:else if game.home_team.game_team_stats[0].goals_scored < game.home_team.game_team_stats[0].goals_allowed && !game.is_overtime}
+                    {:else if game.home_team.game_team_stats[i].goals_scored < game.home_team.game_team_stats[i].goals_allowed && !game.is_overtime}
                         <p class="text-xl text-red-500">Loss</p>
                     {:else}
                         <p class="text-xl text-white">Overtime Loss</p>
@@ -100,30 +101,42 @@
                     {:else}
                         <p class="">Regular Season Game</p>
                     {/if}
-                    {#if game.away_team.game_team_stats[0].goals_scored > game.away_team.game_team_stats[0].goals_allowed}
+                    {#if game.away_team.game_team_stats[i].goals_scored > game.away_team.game_team_stats[i].goals_allowed}
                         <p class="text-xl text-green-500">Win</p>
-                    {:else if game.away_team.game_team_stats[0].goals_scored < game.away_team.game_team_stats[0].goals_allowed && !game.is_overtime}
+                    {:else if game.away_team.game_team_stats[i].goals_scored < game.away_team.game_team_stats[i].goals_allowed && !game.is_overtime}
                         <p class="text-xl text-red-500">Loss</p>
                     {:else}
                         <p class="text-xl text-white">Overtime Loss</p>
                     {/if}
                 </div>
             {/if}
-            <div class="">
-                <div class="flex">
-                    <img src="/teamlogos/{game.home_team.id}.png" alt="hometeam img" class="h-12 w-12 mr-2">
-                    <p>{game.home_teamId} - {game.home_team.game_team_stats[0].goals_scored}</p>
-                </div><div class="flex">
-                    <img src="/teamlogos/{game.away_team.id}.png" alt="hometeam img" class="h-12 w-12 mr-2">
-                    <p>{game.away_teamId} - {game.away_team.game_team_stats[0].goals_scored}</p>
+            {#if game.home_teamId == data.team.id}
+                <div class="">
+                    <div class="flex">
+                        <img src="/teamlogos/{game.home_team.id}.png" alt="hometeam img" class="h-12 w-12 mr-2">
+                        <p>{game.home_teamId} - {game.home_team.game_team_stats[i].goals_scored}</p>
+                    </div><div class="flex">
+                        <img src="/teamlogos/{game.away_team.id}.png" alt="hometeam img" class="h-12 w-12 mr-2">
+                        <p>{game.away_teamId} - {game.home_team.game_team_stats[i].goals_allowed}</p>
+                    </div>
                 </div>
-            </div>
+            {:else}
+                <div class="">
+                    <div class="flex">
+                        <img src="/teamlogos/{game.away_team.id}.png" alt="hometeam img" class="h-12 w-12 mr-2">
+                        <p>{game.away_teamId} - {game.away_team.game_team_stats[i].goals_scored}</p>
+                    </div><div class="flex">
+                        <img src="/teamlogos/{game.home_team.id}.png" alt="hometeam img" class="h-12 w-12 mr-2">
+                        <p>{game.home_teamId} - {game.away_team.game_team_stats[i].goals_allowed}</p>
+                    </div>
+                </div>
+            {/if}
         </div>
         
         {/each}
     </div>
     </div>
-
+    <pre>{JSON.stringify(data, null, 2)}</pre>
 <!--
 <img src={rinkImg}>
 -->
