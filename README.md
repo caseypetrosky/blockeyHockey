@@ -13,8 +13,3 @@ npm create svelte@latest
 # create a new project in my-app
 npm create svelte@latest my-app
 ```
-
-## BHL Website.
-BHL is an online sports league and this is the website for it. It is built using SvelteKit and TailwindCSS. It tracks games, players, and teams.
-
-www.blockeyhockey.com
